@@ -1,0 +1,35 @@
+name: orthogonal-research-skill cross-platform
+
+on:
+  push:
+    paths:
+      - "orthogonal-research-skill/**"
+      - "SKILL.md"
+      - ".github/workflows/orthogonal-research-skill.yml"
+  pull_request:
+    paths:
+      - "orthogonal-research-skill/**"
+      - "SKILL.md"
+
+jobs:
+  self-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+        python: ["3.9", "3.12"]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONNOUSERSITE: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Validate package
+        run: python orthogonal-research-skill/scripts/check_package.py
+      - name: Validate workspace initialization
+        run: python orthogonal-research-skill/scripts/init_workspace.py --self-test
+      - name: Build isolated sample PDF
+        run: python orthogonal-research-skill/scripts/build_report.py --self-test

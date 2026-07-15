@@ -1,0 +1,37 @@
+{
+  "as_of": "2026-07-13",
+  "coverage": {
+    "attempted_languages": ["zh-CN", "en"],
+    "attempted_regions": ["中国", "美国", "欧洲"],
+    "attempted_platforms": ["官网", "监管数据库", "arXiv", "GitHub", "Reddit"],
+    "successful_source_categories": ["official", "academic", "media", "community"],
+    "successful_domains": ["example.com"],
+    "blocked_domains": [],
+    "network_limitations": [],
+    "target_perspective_groups": ["中文/中国大陆", "英文/欧美"],
+    "balance_exception": null
+  },
+  "limitations": [
+    {
+      "scope": "样例数据",
+      "cause": "仅用于构建测试",
+      "bias": "不代表现实对象",
+      "affected_claims": ["C001"],
+      "confidence": "low"
+    }
+  ],
+  "sources": [
+    {"id": "S001", "display_name": "示例官方数据", "title": "示例官方数据", "url": "https://example.com/data", "publisher": "示例机构", "published_at": "2025-12-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C001"]},
+    {"id": "S003", "display_name": "示例产品公告", "title": "示例产品公告", "url": "https://example.com/product", "publisher": "示例公司", "published_at": "2024-06-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C003"]},
+    {"id": "S005", "display_name": "示例版本记录", "title": "示例版本记录", "url": "https://example.com/releases", "publisher": "示例公司", "published_at": "2022-03-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C005"]},
+    {"id": "S008", "display_name": "示例增长数据", "title": "示例增长数据", "url": "https://example.com/growth", "publisher": "示例研究机构", "published_at": "2026-01-20", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 2, "type": "research", "supports": ["D008"]},
+    {"id": "S010", "display_name": "示例竞品研究", "title": "示例竞品研究", "url": "https://example.com/competition", "publisher": "示例研究机构", "published_at": "2026-02-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 2, "type": "research", "supports": ["C010"]},
+    {"id": "S011", "display_name": "示例战略公告", "title": "示例战略公告", "url": "https://example.com/strategy", "publisher": "示例公司", "published_at": "2026-03-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C011"]},
+    {"id": "S017", "display_name": "示例合作公告", "title": "示例合作公告", "url": "https://example.com/partner", "publisher": "示例伙伴", "published_at": "2025-05-01", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 1, "type": "official", "supports": ["C017"]},
+    {"id": "S018", "display_name": "示例独立评测", "title": "示例独立评测", "url": "https://example.com/review", "publisher": "示例媒体", "published_at": "2026-01-15", "accessed_at": "2026-07-13", "language": "en", "region": "GB", "perspective_group": "英文/欧美", "tier": 2, "type": "media", "supports": ["C018"]},
+    {"id": "S019", "display_name": "示例标准化数据", "title": "示例标准化数据", "url": "https://example.com/index", "publisher": "示例研究机构", "published_at": "2026-02-15", "accessed_at": "2026-07-13", "language": "en", "region": "EU", "perspective_group": "英文/欧美", "tier": 2, "type": "research", "supports": ["D019"]},
+    {"id": "S021", "display_name": "示例份额报告", "title": "示例份额报告", "url": "https://example.com/share", "publisher": "示例行业组织", "published_at": "2026-01-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 2, "type": "research", "supports": ["D021"]},
+    {"id": "S022", "display_name": "示例财年数据", "title": "示例财年数据", "url": "https://example.com/financials", "publisher": "示例公司", "published_at": "2026-03-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["D022"]},
+    {"id": "S024", "display_name": "示例技术说明", "title": "示例技术说明", "url": "https://example.com/technology", "publisher": "示例公司", "published_at": "2025-08-01", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 1, "type": "official", "supports": ["C024"]}
+  ]
+}

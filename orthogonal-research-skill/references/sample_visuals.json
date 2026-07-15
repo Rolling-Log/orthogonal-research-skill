@@ -1,0 +1,84 @@
+{
+  "visuals": [
+    {
+      "type": "timeline",
+      "output": "timeline.svg",
+      "title": "五次转折定义了当前路径",
+      "source": "S001、S005、S011",
+      "events": [
+        {"date": "2019", "label": "项目启动"},
+        {"date": "2020-09", "label": "首个原型"},
+        {"date": "2022-03", "label": "公开发布"},
+        {"date": "2024", "label": "渠道转向"},
+        {"date": "2026", "label": "全球扩张"}
+      ]
+    },
+    {
+      "type": "bar",
+      "output": "bar.svg",
+      "title": "头部两家占据超过七成份额",
+      "subtitle": "2025 年目标市场出货量份额",
+      "source": "S021；截至 2025-12-31",
+      "unit": "%",
+      "labels": ["公司 A", "公司 B", "公司 C", "其他"],
+      "values": [41, 32, 16, 11]
+    },
+    {
+      "type": "line",
+      "output": "line.svg",
+      "title": "增长在 2024 年后明显分化",
+      "subtitle": "指数化规模，2022=100",
+      "source": "S008、S019；作者标准化",
+      "labels": ["2022", "2023", "2024", "2025", "2026"],
+      "series": [
+        {"name": "公司 A", "values": [100, 132, 187, 254, 321]},
+        {"name": "公司 B", "values": [100, 124, 148, 171, 192]}
+      ]
+    },
+    {
+      "type": "donut",
+      "output": "donut.svg",
+      "title": "收入仍高度集中于核心产品",
+      "source": "S022；2025 财年",
+      "unit": "百万元",
+      "labels": ["核心产品", "订阅服务", "其他"],
+      "values": [68, 23, 9]
+    },
+    {
+      "type": "matrix",
+      "output": "matrix.svg",
+      "title": "研究对象位于高集成与高开放的交点",
+      "source": "S010、S018；作者判断",
+      "x_label": "开放程度 →",
+      "y_label": "集成程度 →",
+      "points": [
+        {"label": "研究对象", "x": 0.78, "y": 0.82, "group": "target"},
+        {"label": "竞品 A", "x": 0.38, "y": 0.74, "group": "peer"},
+        {"label": "竞品 B", "x": 0.68, "y": 0.43, "group": "peer"}
+      ]
+    },
+    {
+      "type": "knowledge_graph",
+      "output": "knowledge_graph.svg",
+      "title": "生态由产品、渠道与资本三层构成",
+      "source": "S003、S017、S024",
+      "nodes": [
+        {"id": "core", "label": "研究对象", "group": "core", "level": 0},
+        {"id": "p1", "label": "核心产品", "group": "product", "level": 1},
+        {"id": "c1", "label": "渠道伙伴", "group": "organization", "level": 1},
+        {"id": "t1", "label": "基础技术", "group": "technology", "level": 1},
+        {"id": "u1", "label": "企业客户", "group": "market", "level": 2},
+        {"id": "i1", "label": "投资机构", "group": "organization", "level": 2},
+        {"id": "r1", "label": "潜在监管", "group": "market", "level": 2}
+      ],
+      "edges": [
+        {"from": "core", "to": "p1", "label": "推出", "source": "S003", "kind": "fact"},
+        {"from": "core", "to": "c1", "label": "合作", "source": "S017", "kind": "fact"},
+        {"from": "core", "to": "t1", "label": "采用", "source": "S024", "kind": "fact"},
+        {"from": "p1", "to": "u1", "label": "服务", "source": "S003", "kind": "fact"},
+        {"from": "i1", "to": "core", "label": "投资", "source": "S017", "kind": "fact"},
+        {"from": "r1", "to": "core", "label": "影响", "source": "S024", "kind": "hypothesis"}
+      ]
+    }
+  ]
+}

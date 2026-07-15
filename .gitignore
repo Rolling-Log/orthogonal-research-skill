@@ -1,0 +1,17 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Local OS/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated research outputs
+*.log
+*.tmp

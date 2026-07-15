@@ -1,0 +1,19 @@
+{
+  "reportlab": {
+    "version": "4.4.9",
+    "source": "https://pypi.org/project/reportlab/4.4.9/",
+    "bundled_scope": "pure Python PDF, font and Platypus modules only",
+    "license_file": "REPORTLAB-LICENSE.txt"
+  },
+  "source_han_sans_cn": {
+    "upstream_project": "https://github.com/adobe-fonts/source-han-sans",
+    "truetype_distribution": "https://github.com/funstory-ai/BabelDOC-Assets/tree/main/fonts",
+    "conversion_upstream": "https://github.com/Pal3love/Source-Han-TrueType",
+    "license": "SIL Open Font License 1.1",
+    "license_file": "../fonts/OFL-1.1.txt",
+    "files": {
+      "SourceHanSansCN-Regular.ttf": "dd4ae04ab7d33f43202750cf755b2ba47a2122ba41412954e562da459337bbf6",
+      "SourceHanSansCN-Bold.ttf": "2dcaecc0dcba896fdc48e32617633123d91fa80c7eb9f7ae7c836da70e45ce88"
+    }
+  }
+}

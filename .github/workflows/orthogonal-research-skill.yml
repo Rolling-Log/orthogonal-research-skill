@@ -4,12 +4,18 @@ on:
   push:
     paths:
       - "orthogonal-research-skill/**"
-      - "SKILL.md"
+      - "install.sh"
+      - "install.ps1"
       - ".github/workflows/orthogonal-research-skill.yml"
   pull_request:
     paths:
       - "orthogonal-research-skill/**"
-      - "SKILL.md"
+      - "install.sh"
+      - "install.ps1"
+      - ".github/workflows/orthogonal-research-skill.yml"
+
+permissions:
+  contents: read
 
 jobs:
   self-test:
@@ -27,6 +33,13 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
+      - name: Test installer on macOS
+        if: runner.os == 'macOS'
+        run: ./install.sh "$RUNNER_TEMP/orthogonal-research-skill"
+      - name: Test installer on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./install.ps1 -Destination (Join-Path $env:RUNNER_TEMP "orthogonal-research-skill")
       - name: Validate package
         run: python orthogonal-research-skill/scripts/check_package.py
       - name: Validate workspace initialization

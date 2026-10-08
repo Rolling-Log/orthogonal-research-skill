@@ -2,7 +2,7 @@
 
 ![纵横调研：从陌生领域，到有依据的理解](docs/images/hero.svg)
 
-[![最新版本](https://img.shields.io/github/v/release/Rolling-Log/orthogonal-research-skill?label=最新版&color=1E8449)](https://github.com/Rolling-Log/orthogonal-research-skill/releases/latest)
+[![最新版本 V3.1.0](https://img.shields.io/badge/最新版-V3.1.0-1E8449)](https://github.com/Rolling-Log/orthogonal-research-skill/releases/latest)
 [![构建检查](https://github.com/Rolling-Log/orthogonal-research-skill/actions/workflows/orthogonal-research-skill.yml/badge.svg)](https://github.com/Rolling-Log/orthogonal-research-skill/actions/workflows/orthogonal-research-skill.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-1A5276)](LICENSE)
 

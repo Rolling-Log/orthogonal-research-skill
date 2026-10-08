@@ -179,6 +179,8 @@ def load_sources(path: Optional[Path]) -> Tuple[Dict[str, Dict[str, Any]], Dict[
     for key in coverage_keys:
         if not isinstance(coverage.get(key), list):
             raise BuildError("sources.json coverage.{} must be an array".format(key))
+    if coverage.get("balance_policy", "strict") not in ("strict", "diagnostic"):
+        raise BuildError("coverage.balance_policy must be strict or diagnostic")
     for index, limitation in enumerate(limitations):
         if not isinstance(limitation, dict) or not all(
                 key in limitation for key in ("scope", "cause", "bias", "affected_claims", "confidence")):
@@ -347,21 +349,28 @@ def _valid_balance_exception(value: Any) -> bool:
 def _source_balance(cited_ids: Sequence[str], sources: Dict[str, Dict[str, Any]],
                     source_payload: Dict[str, Any]) -> Dict[str, Any]:
     coverage = source_payload.get("coverage", {})
+    policy = coverage.get("balance_policy", "strict")
+    if policy not in ("strict", "diagnostic"):
+        raise BuildError("coverage.balance_policy must be strict or diagnostic")
     target_groups = coverage.get("target_perspective_groups", [])
-    if (len(target_groups) < 2 or len(target_groups) > 4
+    if (not target_groups
+            or not all(isinstance(group, str) and group.strip() for group in target_groups)
             or len(set(target_groups)) != len(target_groups)
-            or not all(isinstance(group, str) and group.strip() for group in target_groups)):
-        raise BuildError("coverage.target_perspective_groups must contain 2-4 unique groups")
+            or (policy == "strict" and not 2 <= len(target_groups) <= 4)):
+        raise BuildError("coverage.target_perspective_groups requires unique non-empty groups (2-4 for strict policy)")
 
     effective = {}
     duplicates = []
     excluded_tier4 = []
+    unknown_independence = []
     for source_id in cited_ids:
         source = sources[source_id]
         if source["tier"] == 4:
             excluded_tier4.append(source_id)
             continue
         key = str(source.get("independence_key") or source_id).strip()
+        if not str(source.get("independence_key", "")).strip():
+            unknown_independence.append(source_id)
         group = str(source["perspective_group"]).strip()
         if key in effective:
             canonical_id = effective[key]
@@ -392,8 +401,16 @@ def _source_balance(cited_ids: Sequence[str], sources: Dict[str, Dict[str, Any]]
     ]
     failing = [item for item in distribution if item["share"] < 0.2 or item["share"] > 0.8]
     exception = coverage.get("balance_exception")
-    status = "pass"
-    if failing:
+    status = "diagnostic" if policy == "diagnostic" else "pass"
+    warnings = []
+    if policy == "diagnostic":
+        if len(target_groups) == 1:
+            warnings.append("Only one perspective group recorded; assess whether relevant views are missing")
+        elif failing:
+            warnings.append("Uneven language/region distribution; assess claim-specific gaps, do not add sources merely to meet a ratio")
+        if unknown_independence:
+            warnings.append("Some source roots are unspecified; source count is not verified independent evidence")
+    if failing and policy == "strict":
         if not _valid_balance_exception(exception):
             details = ", ".join("{}={:.1%}".format(item["group"], item["share"])
                                 for item in distribution)
@@ -414,11 +431,15 @@ def _source_balance(cited_ids: Sequence[str], sources: Dict[str, Dict[str, Any]]
         status = "exception"
     return {
         "status": status,
+        "policy": policy,
         "effective_source_count": total,
         "distribution": distribution,
         "deduplicated_sources": duplicates,
         "excluded_tier4_sources": excluded_tier4,
         "exception": exception if status == "exception" else None,
+        "unknown_independence_sources": unknown_independence,
+        "warnings": warnings,
+        "interpretation": "Source-distribution metadata only; no semantic reliability or confidence verdict",
     }
 
 

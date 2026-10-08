@@ -1,37 +1,465 @@
 {
   "as_of": "2026-07-13",
   "coverage": {
-    "attempted_languages": ["zh-CN", "en"],
-    "attempted_regions": ["中国", "美国", "欧洲"],
-    "attempted_platforms": ["官网", "监管数据库", "arXiv", "GitHub", "Reddit"],
-    "successful_source_categories": ["official", "academic", "media", "community"],
-    "successful_domains": ["example.com"],
+    "attempted_languages": [
+      "zh-CN",
+      "en"
+    ],
+    "attempted_regions": [
+      "中国",
+      "美国",
+      "欧洲"
+    ],
+    "attempted_platforms": [
+      "官网",
+      "学术数据库",
+      "arXiv",
+      "GitHub",
+      "Reddit"
+    ],
+    "successful_source_categories": [
+      "official",
+      "academic",
+      "media",
+      "community"
+    ],
+    "successful_domains": [
+      "example.com"
+    ],
     "blocked_domains": [],
     "network_limitations": [],
-    "target_perspective_groups": ["中文/中国大陆", "英文/欧美"],
-    "balance_exception": null
+    "target_perspective_groups": [
+      "中文/中国大陆",
+      "英文/欧美"
+    ],
+    "balance_exception": null,
+    "balance_policy": "diagnostic",
+    "notes": "全部为虚构渲染样例，未开展真实检索；统计只验证元数据。"
   },
   "limitations": [
     {
-      "scope": "样例数据",
-      "cause": "仅用于构建测试",
-      "bias": "不代表现实对象",
-      "affected_claims": ["C001"],
+      "scope": "全部样例主张和数据",
+      "cause": "虚构渲染与结构演示，没有真实原文或实际观测。",
+      "bias": "不能代表任何现实对象或作为方法效果证据。",
+      "affected_claims": [
+        "C001",
+        "C003",
+        "C005",
+        "C010",
+        "C011",
+        "C017",
+        "C018",
+        "C024",
+        "C030",
+        "D008",
+        "D019",
+        "D021",
+        "D022"
+      ],
       "confidence": "low"
     }
   ],
   "sources": [
-    {"id": "S001", "display_name": "示例官方数据", "title": "示例官方数据", "url": "https://example.com/data", "publisher": "示例机构", "published_at": "2025-12-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C001"]},
-    {"id": "S003", "display_name": "示例产品公告", "title": "示例产品公告", "url": "https://example.com/product", "publisher": "示例公司", "published_at": "2024-06-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C003"]},
-    {"id": "S005", "display_name": "示例版本记录", "title": "示例版本记录", "url": "https://example.com/releases", "publisher": "示例公司", "published_at": "2022-03-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C005"]},
-    {"id": "S008", "display_name": "示例增长数据", "title": "示例增长数据", "url": "https://example.com/growth", "publisher": "示例研究机构", "published_at": "2026-01-20", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 2, "type": "research", "supports": ["D008"]},
-    {"id": "S010", "display_name": "示例竞品研究", "title": "示例竞品研究", "url": "https://example.com/competition", "publisher": "示例研究机构", "published_at": "2026-02-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 2, "type": "research", "supports": ["C010"]},
-    {"id": "S011", "display_name": "示例战略公告", "title": "示例战略公告", "url": "https://example.com/strategy", "publisher": "示例公司", "published_at": "2026-03-01", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["C011"]},
-    {"id": "S017", "display_name": "示例合作公告", "title": "示例合作公告", "url": "https://example.com/partner", "publisher": "示例伙伴", "published_at": "2025-05-01", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 1, "type": "official", "supports": ["C017"]},
-    {"id": "S018", "display_name": "示例独立评测", "title": "示例独立评测", "url": "https://example.com/review", "publisher": "示例媒体", "published_at": "2026-01-15", "accessed_at": "2026-07-13", "language": "en", "region": "GB", "perspective_group": "英文/欧美", "tier": 2, "type": "media", "supports": ["C018"]},
-    {"id": "S019", "display_name": "示例标准化数据", "title": "示例标准化数据", "url": "https://example.com/index", "publisher": "示例研究机构", "published_at": "2026-02-15", "accessed_at": "2026-07-13", "language": "en", "region": "EU", "perspective_group": "英文/欧美", "tier": 2, "type": "research", "supports": ["D019"]},
-    {"id": "S021", "display_name": "示例份额报告", "title": "示例份额报告", "url": "https://example.com/share", "publisher": "示例行业组织", "published_at": "2026-01-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 2, "type": "research", "supports": ["D021"]},
-    {"id": "S022", "display_name": "示例财年数据", "title": "示例财年数据", "url": "https://example.com/financials", "publisher": "示例公司", "published_at": "2026-03-31", "accessed_at": "2026-07-13", "language": "zh-CN", "region": "CN", "perspective_group": "中文/中国大陆", "tier": 1, "type": "official", "supports": ["D022"]},
-    {"id": "S024", "display_name": "示例技术说明", "title": "示例技术说明", "url": "https://example.com/technology", "publisher": "示例公司", "published_at": "2025-08-01", "accessed_at": "2026-07-13", "language": "en", "region": "US", "perspective_group": "英文/欧美", "tier": 1, "type": "official", "supports": ["C024"]}
+    {
+      "id": "S001",
+      "display_name": "示例官方数据",
+      "title": "示例官方数据",
+      "url": "https://example.com/data",
+      "publisher": "示例机构",
+      "published_at": "2025-12-31",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C001"
+      ],
+      "independence_key": "template-s001",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S003",
+      "display_name": "示例产品公告",
+      "title": "示例产品公告",
+      "url": "https://example.com/product",
+      "publisher": "示例公司",
+      "published_at": "2024-06-01",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C003"
+      ],
+      "independence_key": "template-s003",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S005",
+      "display_name": "示例版本记录",
+      "title": "示例版本记录",
+      "url": "https://example.com/releases",
+      "publisher": "示例公司",
+      "published_at": "2022-03-01",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C005"
+      ],
+      "independence_key": "template-s005",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S008",
+      "display_name": "示例增长数据",
+      "title": "示例增长数据",
+      "url": "https://example.com/growth",
+      "publisher": "示例研究机构",
+      "published_at": "2026-01-20",
+      "accessed_at": "2026-07-13",
+      "language": "en",
+      "region": "US",
+      "perspective_group": "英文/欧美",
+      "tier": 2,
+      "type": "research",
+      "supports": [
+        "D008"
+      ],
+      "independence_key": "template-s008",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S010",
+      "display_name": "示例竞品研究",
+      "title": "示例竞品研究",
+      "url": "https://example.com/competition",
+      "publisher": "示例研究机构",
+      "published_at": "2026-02-01",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 2,
+      "type": "research",
+      "supports": [
+        "C010"
+      ],
+      "independence_key": "template-s010",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S011",
+      "display_name": "示例战略公告",
+      "title": "示例战略公告",
+      "url": "https://example.com/strategy",
+      "publisher": "示例公司",
+      "published_at": "2026-03-01",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C011"
+      ],
+      "independence_key": "template-s011",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S017",
+      "display_name": "示例合作公告",
+      "title": "示例合作公告",
+      "url": "https://example.com/partner",
+      "publisher": "示例伙伴",
+      "published_at": "2025-05-01",
+      "accessed_at": "2026-07-13",
+      "language": "en",
+      "region": "US",
+      "perspective_group": "英文/欧美",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C003",
+        "C017"
+      ],
+      "independence_key": "template-s017",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S018",
+      "display_name": "示例独立评测",
+      "title": "示例独立评测",
+      "url": "https://example.com/review",
+      "publisher": "示例媒体",
+      "published_at": "2026-01-15",
+      "accessed_at": "2026-07-13",
+      "language": "en",
+      "region": "GB",
+      "perspective_group": "英文/欧美",
+      "tier": 2,
+      "type": "media",
+      "supports": [
+        "C018"
+      ],
+      "independence_key": "template-s018",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S019",
+      "display_name": "示例标准化数据",
+      "title": "示例标准化数据",
+      "url": "https://example.com/index",
+      "publisher": "示例研究机构",
+      "published_at": "2026-02-15",
+      "accessed_at": "2026-07-13",
+      "language": "en",
+      "region": "EU",
+      "perspective_group": "英文/欧美",
+      "tier": 2,
+      "type": "research",
+      "supports": [
+        "D019"
+      ],
+      "independence_key": "template-s019",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S021",
+      "display_name": "示例份额报告",
+      "title": "示例份额报告",
+      "url": "https://example.com/share",
+      "publisher": "示例行业组织",
+      "published_at": "2026-01-31",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 2,
+      "type": "research",
+      "supports": [
+        "D021"
+      ],
+      "independence_key": "template-s021",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S022",
+      "display_name": "示例财年数据",
+      "title": "示例财年数据",
+      "url": "https://example.com/financials",
+      "publisher": "示例公司",
+      "published_at": "2026-03-31",
+      "accessed_at": "2026-07-13",
+      "language": "zh-CN",
+      "region": "CN",
+      "perspective_group": "中文/中国大陆",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "D022"
+      ],
+      "independence_key": "template-s022",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    },
+    {
+      "id": "S024",
+      "display_name": "示例技术说明",
+      "title": "示例技术说明",
+      "url": "https://example.com/technology",
+      "publisher": "示例公司",
+      "published_at": "2025-08-01",
+      "accessed_at": "2026-07-13",
+      "language": "en",
+      "region": "US",
+      "perspective_group": "英文/欧美",
+      "tier": 1,
+      "type": "official",
+      "supports": [
+        "C024"
+      ],
+      "independence_key": "template-s024",
+      "notes": "虚构来源，example.com 及日期仅为模板；无真实原文。"
+    }
+  ],
+  "method_version": "3",
+  "claims": [
+    {
+      "id": "C001",
+      "claim": "虚构样例用指数化数据和时间线演示构建。",
+      "source_ids": [
+        "S001"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C003",
+      "claim": "虚构设定中的模块复用可能减少重复工程，经济净收益未定。",
+      "source_ids": [
+        "S003",
+        "S017"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "impact_reason": "演示一个会改变路线成本理解的承重推断，不能把技术复用当成净收益。",
+      "kind": "inference",
+      "evidence": [
+        {
+          "source_id": "S003",
+          "locator": "模板示意：产品公告的组件复用段；无真实原文。",
+          "supported_statement": "虚构设定记载核心组件进入两个系列。",
+          "support_boundary": "只演示技术复用，不提供同条件工程成本或利润。",
+          "time_basis": "模板公告期 2024-06-01；回顾此前设计，无实际观测。"
+        },
+        {
+          "source_id": "S017",
+          "locator": "模板示意：合作公告的渠道段；无真实原文。",
+          "supported_statement": "虚构设定记载渠道合作与投资关系。",
+          "support_boundary": "合作公告不证明成本收益，也不能排除渠道同时影响复用和增长。",
+          "time_basis": "模板公告期 2025-05-01；非实际收益观测。"
+        }
+      ],
+      "review": {
+        "alternative": "渠道需求同时推动复用与扩张，兼容和协调开销可能抵消节省。",
+        "discriminating_evidence": "同条件项目的重复工程、协调成本及净成本对照；本样例没有。",
+        "change_condition": "净成本对照无优势则撤回成本优势，只保留技术复用事实。",
+        "revision": "从必然降低成本收窄为可能减少重复工程，净成本和利润仍未知。"
+      },
+      "counterevidence": []
+    },
+    {
+      "id": "C005",
+      "claim": "虚构时间线中公开发布节点用于演示时间标签。",
+      "source_ids": [
+        "S005"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C010",
+      "claim": "虚构定位矩阵的集成和开放程度是示意坐标，不是客观评分。",
+      "source_ids": [
+        "S010"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C011",
+      "claim": "虚构时间线用渠道转向和全球扩张节点演示阶段。",
+      "source_ids": [
+        "S011"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C017",
+      "claim": "虚构图谱用合作与投资关系演示逐边出处。",
+      "source_ids": [
+        "S017"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C018",
+      "claim": "虚构比较表用迁移成本和体验一致性演示比较边界。",
+      "source_ids": [
+        "S018"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C024",
+      "claim": "虚构图谱用技术采用实线和监管影响虚线演示不同关系性质。",
+      "source_ids": [
+        "S024"
+      ],
+      "status": "provisional",
+      "confidence": "low",
+      "counterevidence": []
+    },
+    {
+      "id": "C030",
+      "claim": "扩大复用可能降低总成本，但未取得可判断的证据。",
+      "source_ids": [],
+      "status": "unresolved",
+      "confidence": "low",
+      "kind": "hypothesis",
+      "impact_reason": "演示缺证时撤去投入结论，不能因字段完整断定收益。",
+      "evidence": [],
+      "support_gap": "本样例没有任何同条件净成本观测，无法形成投入建议。",
+      "review": {
+        "alternative": "接口兼容和协调成本抵消重复工程节省。",
+        "discriminating_evidence": "同条件项目总成本对照；没有真实材料。",
+        "change_condition": "净成本无优势则撤回成本优势；有优势也限于测试条件。",
+        "revision": "撤去扩大投入结论，保留尚未验证的假设。"
+      },
+      "counterevidence": []
+    }
+  ],
+  "datasets": [
+    {
+      "id": "D008",
+      "file": "sample_visuals.json",
+      "unit": "指数（2022=100）",
+      "definition": "虚构 line.values，仅演示序列；不代表公司观测。",
+      "period": "模板标签 2022–2026",
+      "geography": "虚构样例",
+      "source_ids": [
+        "S008"
+      ]
+    },
+    {
+      "id": "D019",
+      "file": "sample_visuals.json",
+      "unit": "指数（2022=100）",
+      "definition": "虚构 line.values 的标准化口径示意，无真实转换数据。",
+      "period": "模板标签 2022–2026",
+      "geography": "虚构样例",
+      "source_ids": [
+        "S019"
+      ]
+    },
+    {
+      "id": "D021",
+      "file": "sample_visuals.json",
+      "unit": "%",
+      "definition": "虚构 bar.values 的出货份额示意，非行业数据。",
+      "period": "模板 FY2025",
+      "geography": "虚构样例",
+      "source_ids": [
+        "S021"
+      ]
+    },
+    {
+      "id": "D022",
+      "file": "sample_visuals.json",
+      "unit": "百万元（虚构）",
+      "definition": "虚构 donut.values 的收入构成示意。",
+      "period": "模板 FY2025",
+      "geography": "虚构样例",
+      "source_ids": [
+        "S022"
+      ]
+    }
   ]
 }

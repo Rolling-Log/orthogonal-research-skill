@@ -27,6 +27,7 @@ REQUIRED = [
     "references/v1-regression-matrix.md", "references/examples.md",
     "scripts/build_report.py", "scripts/init_workspace.py",
     "scripts/render_visuals.py", "scripts/visual_scene.py",
+    "scripts/check_research.py",
 ]
 
 

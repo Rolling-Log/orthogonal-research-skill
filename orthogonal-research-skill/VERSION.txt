@@ -1,14 +1,16 @@
-orthogonal-research-skill V2.2
-基于 V2.1；可靠性修复版。研究方法政策沿用旧版，V3 单独试验。
+orthogonal-research-skill V3
+基于 V2.2；用途适配与方法修订版，保留已验收的可靠性实现。
+实施与本地验证日期：2026-10-07。Windows Python 3.12/3.14 实机检查通过；样例 PDF 六页及真实获取链两页均已渲染并逐页查看。
+方法效果按本地独立任务比较的实际记录陈述；AI 评审不能代替真人理解效率、全部对象类型或其他平台验证。完整验收与版本选择见项目总目录“升级结果与验收汇报-2026-10-07.txt”，证据保存在 upgrade-validation-2026-10-02（准备命名日期，不是所有执行日期）。
 
-本文件夹即 skill 根目录：SKILL.md、scripts、references、assets 同级。
-命令中的 <skill-dir> 指本目录，不再向内追加同名目录。
-历史 V2、V2.1 保留在各自原目录；本版未安装到全局 skills。
+本文件夹即 skill 根：SKILL.md 与 scripts、references、assets 同级。
+历史 V2、V2.1、V2.2 保留原件；本版未安装到全局 skills。
+选择一个版本使用；同名 frontmatter 不适合同时安装多份同名 skill。
 
-修复范围：表格/列表/图注引用与说明、图谱每条关系的来源、封面固定署名、字数联动、单层发行检查、安全且有界的文本获取、图片转换文档。
-构建日志中的 success/render_status 只说明交付渲染；research_review_status=not_assessed 不表示证据或研究结论通过。
+方法改变：提取工作/探索目的，实质歧义才少量澄清；先领域扫描；按目标、机制、约束和路线展开纵向、横向与交汇；高影响主张复用 evidence/review 记录定位、边界、时间、强替代及修订。机械字数、来源/语境比例、图数和情景数改为诊断或条件化，完整深度与必要机制仍须实际验收。
+新 sources 标 method_version="3"、coverage.balance_policy="diagnostic"；未标政策的旧数据继续 strict，未知政策拒绝，不自动迁移旧成品。check_research 只检查结构和可审查性，不给研究语义 PASS。
+构建 success/render_status 只说明渲染；research_review_status=not_assessed 不表示结论已核验。PDF/HTML 封面自动字数与粗估阅读时间继续保留。
 
-PDF 构建采用内置纯 Python ReportLab 子集和字体。包内 Pillow/curl 二进制仅为旧版 Windows 兼容资源；图片转换必须另确认当前环境可用兼容库，不依赖其完成常规构建。
-检索回退仅支持文本、已配置 HTTP 代理和直连，保留 TLS 校验；压缩响应明确拒绝，改用环境获取工具。HTTP 成功不等于取得有效研究证据。
-
-选择一个版本使用；同名 frontmatter 不适合把多份版本同时作为全局同名 skill 安装。
+PDF 用内置纯 Python ReportLab 子集和字体。包内 Pillow/curl 二进制仅是旧 Windows 兼容资源；转换需当前环境有兼容库，常规构建不依赖这些资源。平台实机通过只按实际运行日志陈述。
+文本获取回退保留 TLS，支持已有 HTTP 代理及直连，压缩/非文本响应明确拒绝。HTTP 成功不等于取得有效研究证据。
+sample_report/sample_sources/sample_visuals 中所有公司、数值、日期、关系和定位为虚构模板，只服务结构与渲染测试。

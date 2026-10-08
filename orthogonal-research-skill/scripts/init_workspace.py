@@ -122,8 +122,10 @@ def create_workspace(subject: str, destination: Optional[Path] = None,
             encoding="utf-8",
         )
         sources = {
+            "method_version": "3",
             "as_of": "",
             "coverage": {
+                "balance_policy": "diagnostic",
                 "attempted_languages": [],
                 "attempted_regions": [],
                 "attempted_platforms": [],
@@ -143,7 +145,10 @@ def create_workspace(subject: str, destination: Optional[Path] = None,
             json.dumps(sources, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         (root / "sources" / "research-log.json").write_text(
-            json.dumps({"rounds": []}, ensure_ascii=False, indent=2), encoding="utf-8"
+            json.dumps({"brief": {"subject": subject, "type": "", "purpose": "",
+                                   "context_basis": "", "questions": [], "reading_budget": None},
+                        "rounds": [], "important_unknowns": [], "revisions": [],
+                        "stop_reason": ""}, ensure_ascii=False, indent=2), encoding="utf-8"
         )
     except OSError as exc:
         raise WorkspaceError("cannot create report workspace at {}: {}".format(root, exc))

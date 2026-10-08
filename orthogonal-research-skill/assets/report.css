@@ -102,6 +102,8 @@ super {
 table { width: 100%; margin: 4mm 0 5mm; border-collapse: collapse; font-size: 8.5pt; }
 th, td { padding: 2.2mm; border: 0.35pt solid var(--border); text-align: left; vertical-align: top; }
 th { color: #fff; background: var(--deep-blue); }
+th .source-note, th super, th super font { color: #fff; }
+td .source-note, th .source-note { margin: 1mm 0 0; }
 tbody tr:nth-child(even) { background: var(--light); }
 
 figure { margin: 6mm 0 2mm; text-align: center; break-inside: avoid; }

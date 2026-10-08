@@ -1,5 +1,5 @@
-# 纵横调研 · 历史版本 v2.1.0
+# 纵横调研 · 历史版本 v2.2.0
 
-封面字数与阅读时间。此标签保留对应 skill 快照。
+构建与取证可靠性。此标签保留对应 skill 快照。
 
 [查看最新版](https://github.com/Rolling-Log/orthogonal-research-skill) · [下载最新版](https://github.com/Rolling-Log/orthogonal-research-skill/releases/latest)

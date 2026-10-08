@@ -1,0 +1,14 @@
+orthogonal-research-skill V2.2
+基于 V2.1；可靠性修复版。研究方法政策沿用旧版，V3 单独试验。
+
+本文件夹即 skill 根目录：SKILL.md、scripts、references、assets 同级。
+命令中的 <skill-dir> 指本目录，不再向内追加同名目录。
+历史 V2、V2.1 保留在各自原目录；本版未安装到全局 skills。
+
+修复范围：表格/列表/图注引用与说明、图谱每条关系的来源、封面固定署名、字数联动、单层发行检查、安全且有界的文本获取、图片转换文档。
+构建日志中的 success/render_status 只说明交付渲染；research_review_status=not_assessed 不表示证据或研究结论通过。
+
+PDF 构建采用内置纯 Python ReportLab 子集和字体。包内 Pillow/curl 二进制仅为旧版 Windows 兼容资源；图片转换必须另确认当前环境可用兼容库，不依赖其完成常规构建。
+检索回退仅支持文本、已配置 HTTP 代理和直连，保留 TLS 校验；压缩响应明确拒绝，改用环境获取工具。HTTP 成功不等于取得有效研究证据。
+
+选择一个版本使用；同名 frontmatter 不适合把多份版本同时作为全局同名 skill 安装。

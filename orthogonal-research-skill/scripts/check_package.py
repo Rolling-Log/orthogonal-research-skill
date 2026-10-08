@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate portability, v1 regression guardrails, assets, and root copy sync."""
+"""Validate this skill package and, when requested, an explicit SKILL.md copy."""
 
 from __future__ import annotations
 
@@ -13,7 +13,6 @@ from typing import Dict, List, Optional, Tuple
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 CANONICAL = SKILL_DIR / "SKILL.md"
-DEFAULT_ROOT_COPY = SKILL_DIR.parent / "SKILL.md"
 EXPECTED_ASSETS = {
     "assets/fonts/SourceHanSansCN-Regular.ttf": "dd4ae04ab7d33f43202750cf755b2ba47a2122ba41412954e562da459337bbf6",
     "assets/fonts/SourceHanSansCN-Bold.ttf": "2dcaecc0dcba896fdc48e32617633123d91fa80c7eb9f7ae7c836da70e45ce88",
@@ -62,7 +61,7 @@ def scan_portability() -> List[str]:
     }
     old_marker = re.compile(r"\[" + r"@S\d{3,}" + r"\]")
     absolute_path = re.compile(r"(?<!https:)(?<!http:)(?<!file:)/(?:Users|home|mnt|tmp)/")
-    index_heading = re.compile(r"^#{1,6}\s+目" + "录\s*$", re.M)
+    index_heading = re.compile(r"^#{1,6}\s+目" + r"录\s*$", re.M)
     shell_continuation = re.compile(r"\\\s*$", re.M)
     for path in authored_files():
         text = path.read_text(encoding="utf-8")
@@ -81,7 +80,7 @@ def scan_portability() -> List[str]:
     return problems
 
 
-def validate(root_copy: Path) -> List[str]:
+def validate(root_copy: Optional[Path] = None) -> List[str]:
     problems = []
     for relative in REQUIRED:
         if not (SKILL_DIR / relative).is_file():
@@ -99,9 +98,9 @@ def validate(root_copy: Path) -> List[str]:
             problems.append("missing bundled asset: {}".format(relative))
         elif sha256(path) != expected:
             problems.append("asset hash mismatch: {}".format(relative))
-    for path in SKILL_DIR.parent.rglob(".DS_Store"):
+    for path in SKILL_DIR.rglob(".DS_Store"):
         problems.append("extraneous metadata file: {}".format(path))
-    if not root_copy.is_file() or root_copy.read_bytes() != CANONICAL.read_bytes():
+    if root_copy is not None and (not root_copy.is_file() or root_copy.read_bytes() != CANONICAL.read_bytes()):
         problems.append("root SKILL.md is not synchronized with canonical SKILL.md")
     problems.extend(scan_portability())
     return problems
@@ -110,10 +109,15 @@ def validate(root_copy: Path) -> List[str]:
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sync", action="store_true", help="overwrite root copy from canonical")
-    parser.add_argument("--root-copy", type=Path, default=DEFAULT_ROOT_COPY)
+    parser.add_argument("--root-copy", type=Path, help="explicit SKILL.md copy to compare or sync")
     args = parser.parse_args(argv)
     if args.sync:
-        args.root_copy.write_bytes(CANONICAL.read_bytes())
+        if args.root_copy is None:
+            parser.error("--sync requires an explicit --root-copy target")
+        try:
+            args.root_copy.write_bytes(CANONICAL.read_bytes())
+        except OSError as exc:
+            parser.error("cannot sync the explicit copy: {}".format(exc))
     problems = validate(args.root_copy)
     if problems:
         for problem in problems:

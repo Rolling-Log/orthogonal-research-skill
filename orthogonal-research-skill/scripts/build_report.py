@@ -68,7 +68,7 @@ FONT_BOLD_PATH = SKILL_DIR / "assets" / "fonts" / "SourceHanSansCN-Bold.ttf"
 DEFAULT_CSS = SKILL_DIR / "assets" / "report.css"
 
 ANNOTATION_RE = re.compile(
-    r"\{\{\s*((?:@S\d{3,})(?:\s*,\s*@S\d{3,})*)\s*\|\s*(.+?)\s*\}\}"
+    r"\{\{\s*((?:@S\d{3,})(?:\s*,\s*@S\d{3,})*)\s*\|\s*(.*?)\s*\}\}"
 )
 OLD_MARKER_RE = re.compile(r"\[@S\d{3,}\]")
 HEADING_RE = re.compile(r"^(#{1,4})\s+(.+?)\s*$")
@@ -80,7 +80,7 @@ BIBLIOGRAPHY_HEADING_RE = re.compile(
     r"^##\s+(?:五[、.]\s*)?信息来源(?:与方法说明)?\s*$", re.M
 )
 BIBLIOGRAPHY_ITEM_RE = re.compile(r"^\s*(\d+)[.)]\s+(.+?)\s*$")
-SOURCE_ID_RE = re.compile(r"S\d{3,}")
+SOURCE_ID_RE = re.compile(r"(?<![A-Za-z0-9_])S\d{3,}(?![A-Za-z0-9_])")
 URL_RE = re.compile(r"https?://[^\s)）>|｜]+")
 CJK_COUNT_RE = re.compile(
     r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\U00020000-\U000323af]"
@@ -201,6 +201,8 @@ def _annotation(block_text: str) -> Tuple[str, List[str], str]:
     notes = []
 
     def replace(match: re.Match) -> str:
+        if re.search(r"\{\{\s*@", match.group(2)):
+            raise BuildError("invalid source note syntax; nested source notes are not supported")
         for raw in match.group(1).split(","):
             source_id = raw.strip().lstrip("@")
             if source_id not in ids:
@@ -210,7 +212,7 @@ def _annotation(block_text: str) -> Tuple[str, List[str], str]:
 
     body = ANNOTATION_RE.sub(replace, block_text).strip()
     syntax_check = ANNOTATION_RE.sub("", body)
-    if "{{@" in syntax_check:
+    if re.search(r"\{\{\s*@", syntax_check):
         raise BuildError("invalid source note syntax; use {{@S014,@S019 | note}}")
     return body, ids, "；".join(notes)
 
@@ -250,7 +252,6 @@ def _citation_order(blocks: Sequence[Block], report_root: Path,
                     visual_references: Dict[Path, List[str]]) -> List[str]:
     order = []
     for block in blocks:
-        _ordered_add(order, block.note_ids or [])
         if block.kind == "image":
             raw = urlparse(block.path)
             if raw.scheme not in ("http", "https", "data"):
@@ -258,7 +259,7 @@ def _citation_order(blocks: Sequence[Block], report_root: Path,
                 _ordered_add(order, visual_references.get(path, []))
             _ordered_add(order, _source_ids(block.alt))
         elif block.kind in ("paragraph", "quote", "heading", "caption", "code"):
-            _ordered_add(order, _source_ids(ANNOTATION_RE.sub("", block.text)))
+            _ordered_add(order, _source_ids(block.text))
         elif block.kind == "list":
             for item in (block.rows or [[]])[0]:
                 _ordered_add(order, _source_ids(item))
@@ -435,8 +436,39 @@ def _starts_block(lines: Sequence[str], index: int) -> bool:
 
 
 def _cells(line: str) -> List[str]:
-    value = line.strip().strip("|")
-    return [cell.strip() for cell in value.split("|")]
+    # A source note's own pipe is not a column separator. Validate it before
+    # splitting so a malformed note fails explicitly rather than losing text.
+    _annotation(line)
+    value = line.strip()
+    if value.startswith("|"):
+        value = value[1:]
+    if value.endswith("|"):
+        preceding_slashes = len(value[:-1]) - len(value[:-1].rstrip("\\"))
+        if preceding_slashes % 2 == 0:
+            value = value[:-1]
+    cells, current = [], []
+    index = 0
+    while index < len(value):
+        note = ANNOTATION_RE.match(value, index)
+        if note:
+            current.append(note.group(0))
+            index = note.end()
+            continue
+        char = value[index]
+        if char == "|":
+            previous = "".join(current)
+            slashes = len(previous) - len(previous.rstrip("\\"))
+            if slashes % 2:
+                current[-1] = current[-1][:-1]
+                current.append("|")
+            else:
+                cells.append("".join(current).strip())
+                current = []
+        else:
+            current.append(char)
+        index += 1
+    cells.append("".join(current).strip())
+    return cells
 
 
 def parse_markdown(text: str) -> List[Block]:
@@ -456,17 +488,22 @@ def parse_markdown(text: str) -> List[Block]:
             continue
         heading = HEADING_RE.match(line)
         if heading:
+            if re.search(r"\{\{\s*@", heading.group(2)):
+                raise BuildError("source notes are not supported in headings; move the note into body text")
             blocks.append(Block("heading", heading.group(2).strip(), len(heading.group(1))))
             index += 1
             continue
         image = IMAGE_RE.match(stripped)
         if image:
+            if re.search(r"\{\{\s*@", image.group(1)):
+                raise BuildError("source notes are not supported in image titles; move the note into the following figure-source caption")
             blocks.append(Block("image", path=image.group(2), alt=image.group(1)))
             index += 1
             continue
         caption = CAPTION_RE.match(stripped)
         if caption:
-            blocks.append(Block("caption", caption.group(1)))
+            body, ids, note = _annotation(caption.group(1))
+            blocks.append(Block("caption", body, note_ids=ids, note_text=note))
             index += 1
             continue
         if stripped.startswith("```") or stripped.startswith("~~~"):
@@ -480,6 +517,8 @@ def parse_markdown(text: str) -> List[Block]:
             if index >= len(lines):
                 raise BuildError("unterminated fenced code block")
             index += 1
+            if any(re.search(r"\{\{\s*@", value) for value in content):
+                raise BuildError("source notes are not supported in code blocks; move the note into body text")
             blocks.append(Block("code", "\n".join(content), 0))
             blocks[-1].alt = language
             continue
@@ -513,7 +552,8 @@ def parse_markdown(text: str) -> List[Block]:
                 match = LIST_RE.match(lines[index])
                 if not match or (match.group(1) is not None) != ordered:
                     break
-                items.append(match.group(2).strip())
+                item, _, _ = _annotation(match.group(2).strip())
+                items.append(item)
                 index += 1
             blocks.append(Block("list", rows=[items], ordered=ordered))
             continue
@@ -580,7 +620,7 @@ def _citation_marker(source_ids: Sequence[str], sources: Dict[str, Dict[str, Any
 
 
 def _inline_with_notes(value: str, sources: Dict[str, Dict[str, Any]],
-                       reference_numbers: Dict[str, int]) -> str:
+                       reference_numbers: Dict[str, int], marker_color: str = "#1A5276") -> str:
     """Render compact source markers; explanatory text is placed below the block."""
     rendered = []
     cursor = 0
@@ -589,7 +629,7 @@ def _inline_with_notes(value: str, sources: Dict[str, Dict[str, Any]],
         source_ids = [raw.strip().lstrip("@") for raw in match.group(1).split(",")]
         marker = _citation_marker(source_ids, sources, reference_numbers)
         rendered.append(
-            '<super rise="2.5" size="6.8"><font color="#1A5276">{}</font></super>'.format(marker)
+            '<super rise="2.5" size="6.8"><font color="{}">{}</font></super>'.format(marker_color, marker)
         )
         cursor = match.end()
     rendered.append(_inline_display(value[cursor:], reference_numbers))
@@ -605,7 +645,7 @@ def _explanatory_notes(value: str, sources: Dict[str, Dict[str, Any]],
             continue
         source_ids = [raw.strip().lstrip("@") for raw in match.group(1).split(",")]
         marker = _citation_marker(source_ids, sources, reference_numbers)
-        notes.append("{} {}".format(marker, note))
+        notes.append("{} {}".format(marker, _display_source_ids(note, reference_numbers)))
     return "；".join(notes)
 
 
@@ -891,19 +931,23 @@ def _visual_map(spec_path: Optional[Path], report_root: Path,
         raise BuildError("invalid visual specification: {}".format(exc))
     mapping = {}
     for item in visuals:
-        referenced = set(re.findall(r"S\d{3,}", str(item.get("source", ""))))
+        referenced = set(_source_ids(str(item.get("source", ""))))
         for edge in item.get("edges", []):
             if isinstance(edge, dict):
-                referenced.update(re.findall(r"S\d{3,}", str(edge.get("source", ""))))
+                referenced.update(_source_ids(str(edge.get("source", ""))))
         missing = sorted(referenced - set(sources))
         if missing:
             raise BuildError("visual {} references missing sources: {}".format(
                 item["output"], ", ".join(missing)))
         display_item = copy.deepcopy(item)
+        display_item["source_count_text"] = SOURCE_ID_RE.sub("", str(item.get("source", "")))
         if referenced and referenced.issubset(reference_numbers):
             display_item["source"] = _display_source_ids(
                 str(display_item.get("source", "")), reference_numbers
             )
+            for edge in display_item.get("edges", []):
+                if isinstance(edge, dict):
+                    edge["source"] = _display_source_ids(str(edge.get("source", "")), reference_numbers)
         scene = scene_from_spec(display_item)
         target = output_dir / item["output"]
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -940,6 +984,23 @@ def _note_flowable(block: Block, style: ParagraphStyle,
     return Paragraph("说明：{}".format(_inline(note)), style)
 
 
+def _noted_flowables(value: str, body_style: ParagraphStyle, note_style: ParagraphStyle,
+                     sources: Dict[str, Dict[str, Any]],
+                     reference_numbers: Dict[str, int], marker_color: str = "#1A5276") -> List[Flowable]:
+    body = Paragraph(_inline_with_notes(value, sources, reference_numbers, marker_color), body_style)
+    note = _note_flowable(Block("paragraph", value), note_style, sources, reference_numbers)
+    return [body, note] if note is not None else [body]
+
+
+def _noted_html(value: str, sources: Dict[str, Dict[str, Any]],
+                reference_numbers: Dict[str, int]) -> str:
+    body = _inline_with_notes(value, sources, reference_numbers)
+    note = _explanatory_notes(value, sources, reference_numbers)
+    if note:
+        body += '<p class="source-note">说明：{}</p>'.format(_inline(note))
+    return body
+
+
 def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict[str, Any]],
            visuals: Dict[Path, Scene], report_root: Path, doc_width: float,
            reference_numbers: Dict[str, int], reading_metrics: Dict[str, Any]) -> List[Flowable]:
@@ -965,12 +1026,7 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
         Paragraph("按 300 至 500 字/分钟粗估；图表研读与思考另计", ParagraphStyle(
             "cover_reading_basis", fontName=FONT_REGULAR, fontSize=8, leading=14,
             textColor=MUTED, alignment=TA_CENTER)),
-        Paragraph("原创作者-数字生命卡兹克", ParagraphStyle(
-            "cover_author1", fontName=FONT_REGULAR, fontSize=9, leading=16,
-            textColor=MUTED, alignment=TA_CENTER)),
-        Paragraph("改进作者-RollingLog滑行日志", ParagraphStyle(
-            "cover_author2", fontName=FONT_REGULAR, fontSize=9, leading=16,
-            textColor=MUTED, alignment=TA_CENTER)), PageBreak()]
+        PageBreak()]
 
     for block in _report_body_blocks(blocks):
         if block.kind == "heading":
@@ -1009,13 +1065,31 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
                 prefix = "{}. ".format(index + 1) if block.ordered else "• "
                 style = ParagraphStyle("list_item", parent=styles["body_left"], leftIndent=6 * mm,
                                        firstLineIndent=-4 * mm, spaceAfter=3)
-                story.append(Paragraph(_inline_display(prefix + item, reference_numbers), style))
+                note_style = ParagraphStyle("list_source_note", parent=styles["source_note"],
+                                            leftIndent=6 * mm)
+                story.extend(_noted_flowables(prefix + item, style, note_style, sources, reference_numbers))
         elif block.kind == "table":
             rows = block.rows or []
             rendered = []
             for row_index, row in enumerate(rows):
                 style = styles["table_head"] if row_index == 0 else styles["table"]
-                rendered.append([Paragraph(_inline_display(cell, reference_numbers), style) for cell in row])
+                note_style = ParagraphStyle("table_source_note", parent=styles["source_note"],
+                                            leftIndent=0, spaceAfter=0,
+                                            textColor=colors.white if row_index == 0 else MUTED)
+                cells = [_noted_flowables(cell, style, note_style, sources, reference_numbers,
+                                         "#FFFFFF" if row_index == 0 else "#1A5276") for cell in row]
+                cell_width = doc_width / len(rows[0]) - 10
+                max_row_height = max(sum(flow.wrap(cell_width, A4[1])[1]
+                                         for flow in cell) for cell in cells) + 10
+                # Rows split between pages; a single cell cannot. Reserve the
+                # repeated heading and fail with an actionable message.
+                header_height = max_row_height if row_index == 0 else 0
+                if row_index == 0:
+                    table_header_height = header_height
+                available = A4[1] - 45 * mm - 24 - (table_header_height if row_index else 0)
+                if max_row_height > available:
+                    raise BuildError("table row {} is too tall for one page; shorten the cell or move its explanation into body text".format(row_index + 1))
+                rendered.append(cells)
             table = Table(rendered, colWidths=[doc_width / len(rows[0])] * len(rows[0]),
                           repeatRows=1, hAlign="LEFT", splitByRow=True)
             commands = [("BACKGROUND", (0, 0), (-1, 0), DEEP_BLUE),
@@ -1049,8 +1123,8 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
                 story.append(Paragraph(_inline_display(block.alt, reference_numbers),
                                        styles["figure_caption"]))
         elif block.kind == "caption":
-            story.append(Paragraph(_inline_display(block.text, reference_numbers),
-                                   styles["figure_source"]))
+            story.extend(_noted_flowables(block.text, styles["figure_source"],
+                                           styles["source_note"], sources, reference_numbers))
         elif block.kind == "code":
             code = _display_source_ids(block.text, reference_numbers)
             story.append(Paragraph(html.escape(code).replace("\n", "<br/>"), styles["code"]))
@@ -1110,26 +1184,31 @@ def _reading_metrics(blocks: Sequence[Block], visuals: Dict[Path, Scene],
     """Count rendered report content, rather than Markdown syntax or raw bytes."""
     chunks: List[str] = []
     for block in _report_body_blocks(blocks):
-        if block.kind in ("paragraph", "quote"):
+        if block.kind in ("paragraph", "quote", "caption"):
             # Remove only actual source syntax, preserving literal values like [123].
             body = SOURCE_ID_RE.sub("", ANNOTATION_RE.sub("", block.text))
             chunks.append(_inline(body))
-            note = _explanatory_notes(block.text, sources, reference_numbers)
-            if note:
-                chunks.append(_inline("说明：" + block.note_text))
-        elif block.kind in ("heading", "caption"):
+            _, _, note_text = _annotation(block.text)
+            if note_text:
+                chunks.append(_inline("说明：" + SOURCE_ID_RE.sub("", note_text)))
+        elif block.kind == "heading":
             chunks.append(_inline(SOURCE_ID_RE.sub("", block.text)))
         elif block.kind in ("list", "table"):
             for row in block.rows or []:
-                chunks.extend(_inline(SOURCE_ID_RE.sub("", cell)) for cell in row)
+                for cell in row:
+                    chunks.append(_inline(SOURCE_ID_RE.sub("", ANNOTATION_RE.sub("", cell))))
+                    _, _, note_text = _annotation(cell)
+                    if note_text:
+                        chunks.append(_inline("说明：" + SOURCE_ID_RE.sub("", note_text)))
         elif block.kind == "image":
             chunks.append(_inline(SOURCE_ID_RE.sub("", block.alt)))
             scene = visuals.get(_local_path(block.path, report_root))
             if scene is not None:
                 for item in scene.elements:
-                    if item["kind"] == "text":
+                    if item["kind"] == "text" and item.get("role") != "reference":
                         # A wrapped visual label is one text run.
-                        chunks.append(html.escape("".join(str(line) for line in item["lines"])))
+                        chunks.append(html.escape(str(item.get("count_text", "".join(
+                            str(line) for line in item["lines"])))))
         elif block.kind == "code":
             chunks.append(html.escape(SOURCE_ID_RE.sub("", block.text)))
     counts = [_count_visible_text(chunk) for chunk in chunks]
@@ -1174,14 +1253,14 @@ def _html_blocks(blocks: List[Block], sources: Dict[str, Dict[str, Any]],
         elif block.kind == "list":
             tag = "ol" if block.ordered else "ul"
             items = "".join("<li>{}</li>".format(
-                _inline_display(item, reference_numbers)) for item in (block.rows or [[]])[0])
+                _noted_html(item, sources, reference_numbers)) for item in (block.rows or [[]])[0])
             result.append("<{0}>{1}</{0}>".format(tag, items))
         elif block.kind == "table":
             rows = block.rows or []
             head = "".join("<th>{}</th>".format(
-                _inline_display(cell, reference_numbers)) for cell in rows[0])
+                _noted_html(cell, sources, reference_numbers)) for cell in rows[0])
             body = "".join("<tr>{}</tr>".format("".join(
-                "<td>{}</td>".format(_inline_display(cell, reference_numbers))
+                "<td>{}</td>".format(_noted_html(cell, sources, reference_numbers))
                 for cell in row)) for row in rows[1:])
             result.append("<table><thead><tr>{}</tr></thead><tbody>{}</tbody></table>".format(head, body))
         elif block.kind == "image":
@@ -1192,7 +1271,10 @@ def _html_blocks(blocks: List[Block], sources: Dict[str, Dict[str, Any]],
                 _inline_display(block.alt, reference_numbers)))
         elif block.kind == "caption":
             result.append('<p class="figure-source">{}</p>'.format(
-                _inline_display(block.text, reference_numbers)))
+                _inline_with_notes(block.text, sources, reference_numbers)))
+            note = _explanatory_notes(block.text, sources, reference_numbers)
+            if note:
+                result.append('<p class="source-note">说明：{}</p>'.format(_inline(note)))
         elif block.kind == "code":
             result.append("<pre><code>{}</code></pre>".format(
                 html.escape(_display_source_ids(block.text, reference_numbers))))
@@ -1210,7 +1292,7 @@ def build_html(blocks: List[Block], css: str, title: str, author: str,
 <body><section class="cover"><h1>{title}</h1><div class="cover-rule"></div><p>横纵分析法深度研究报告</p>
 <p class="cover-meta">生成日期：{day}</p><p class="cover-stat">全文字数：{word_count:,} 字</p>
 <p class="cover-stat">{reading_time}</p><p class="cover-stat">按 300 至 500 字/分钟粗估；图表研读与思考另计</p>
-<p class="cover-meta">原创作者-数字生命卡兹克</p><p class="cover-meta">改进作者-RollingLog滑行日志</p></section><main class="report">{body}</main></body></html>""".format(
+</section><main class="report">{body}</main></body></html>""".format(
         lang=html.escape(lang, quote=True), title=html.escape(title), css=css,
         day=datetime.now().strftime("%Y-%m-%d %H:%M"),
         word_count=reading_metrics["word_count"], reading_time=html.escape(_reading_time_label(reading_metrics)),
@@ -1293,6 +1375,8 @@ def build_report(input_path: Path, output_path: Path, title: str, author: str,
     log_path = log_output or output_path.with_suffix(".build.json")
     record = {
         "status": "html-only" if html_only else "success",
+        "render_status": "html-only" if html_only else "success",
+        "research_review_status": "not_assessed",
         "backend": "ReportLab {} bundled pure Python subset".format(REPORTLAB_VERSION),
         "python": "{}.{}.{}".format(*sys.version_info[:3]),
         "input": input_path.name,

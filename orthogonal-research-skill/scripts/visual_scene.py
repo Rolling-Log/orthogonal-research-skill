@@ -6,6 +6,7 @@ from __future__ import annotations
 import html
 import json
 import math
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
@@ -58,14 +59,18 @@ def _list(spec: Dict[str, Any], key: str) -> List[Any]:
 
 def _text(x: float, y: float, value: Any, size: int = 24, fill: str = INK,
           anchor: str = "start", weight: int = 400, max_chars: int = 0,
-          rotation: float = 0) -> Dict[str, Any]:
+          rotation: float = 0, role: str = "body",
+          count_text: Optional[str] = None) -> Dict[str, Any]:
     raw = str(value)
     lines = [raw]
     if max_chars and len(raw) > max_chars:
         lines = [raw[i:i + max_chars] for i in range(0, len(raw), max_chars)][:3]
-    return {"kind": "text", "x": x, "y": y, "lines": lines, "size": size,
+    item = {"kind": "text", "x": x, "y": y, "lines": lines, "size": size,
             "fill": fill, "anchor": anchor, "weight": weight,
-            "line_height": int(size * 1.25), "rotation": rotation}
+            "line_height": int(size * 1.25), "rotation": rotation, "role": role}
+    if count_text is not None:
+        item["count_text"] = count_text
+    return item
 
 
 def _rect(x: float, y: float, width: float, height: float, fill: str,
@@ -110,8 +115,23 @@ def _header(spec: Dict[str, Any], height: int) -> List[Dict[str, Any]]:
 
 def _scene(spec: Dict[str, Any], height: int, elements: Iterable[Dict[str, Any]],
            description: str = "") -> Scene:
+    items = list(elements)
+    source = str(spec.get("source", ""))
+    # A bounded footer preserves the existing chart area and font sizes. Longer
+    # provenance belongs in the accompanying caption rather than tiny type.
+    if len(source) > 165:
+        raise SpecError("visual source is too long; keep source IDs and time here and move details into the figure-source caption")
+    count_source = str(spec.get("source_count_text", re.sub(
+        r"(?<![A-Za-z0-9_])S\d{3,}(?![A-Za-z0-9_])", "", source)))
+    source_lines = (len("来源：" + source) + 57) // 58
+    if spec.get("type") == "bar" and len(spec.get("labels", [])) >= 6 and source_lines > 2:
+        raise SpecError("bar source needs more than two lines; move detailed provenance into the figure-source caption")
+    footer_y = (height - 118 if spec.get("type") == "knowledge_graph"
+                else height - 22 - (source_lines - 1) * 22)
+    items.append(_text(72, footer_y, "来源：" + source, 18, MUTED,
+                       max_chars=58, count_text="来源：" + count_source))
     return Scene(WIDTH, height, str(spec.get("title", "Untitled visual")),
-                 description or str(spec.get("subtitle", "")), tuple(elements))
+                 description or str(spec.get("subtitle", "")), tuple(items))
 
 
 def _bar(spec: Dict[str, Any]) -> Scene:
@@ -308,6 +328,7 @@ def _knowledge_graph(spec: Dict[str, Any]) -> Scene:
             boxes[str(node["id"])] = _Node(str(node["id"]), center - width / 2,
                                                 y, width, 86, label,
                                                 str(node.get("group", "default")))
+    edge_labels = []
     for index, edge in enumerate(edges):
         if not isinstance(edge, dict):
             raise SpecError("edges[{}] must be an object".format(index))
@@ -330,10 +351,25 @@ def _knowledge_graph(spec: Dict[str, Any]) -> Scene:
                            color, 2.2, dash=[10, 8] if kind == "hypothesis" else None))
         items.append({"kind": "triangle", "points": [(ex, ey), (ex - 7, ey - 12),
                                                         (ex + 7, ey - 12)], "fill": color})
-        if edge.get("label"):
-            lx, ly = (sx + ex) / 2, middle - 7
-            items.extend([_rect(lx - 45, ly - 18, 90, 25, BG, radius=8),
-                          _text(lx, ly, edge["label"], 14, color, "middle")])
+        label, source = str(edge.get("label", "")), str(edge["source"])
+        # Each relation carries its own evidence marker, including unlabeled
+        # relations. Reference identity, rather than a numeric regex, controls
+        # exclusion from the report's visible-text count.
+        if len(label) > 6 or len(source) > 40:
+            raise SpecError("edge label/source is too long; use a short verb and source IDs, or split the graph")
+        lx, ly = (sx + ex) / 2, middle - 7
+        label_width = len(label) * 20
+        source_width = len(source) * 11
+        width = max(40, label_width + source_width + 14)
+        left = lx - width / 2
+        edge_labels.append(_rect(left - 5, ly - 21, width + 10, 29, BG, radius=8))
+        if label:
+            edge_labels.append(_text(left, ly, label, 20, color))
+        edge_labels.append(_text(left + label_width + (8 if label else 0), ly - 3,
+                                 source, 20, color, role="reference"))
+    # Paint labels after every relation path, so a later crossing edge cannot
+    # draw through an earlier relationship's source marker.
+    items.extend(edge_labels)
     for box in boxes.values():
         fill, foreground = styles.get(box.group, styles["default"])
         items.extend([_rect(box.x, box.y, box.width, box.height, fill, BORDER, 18),

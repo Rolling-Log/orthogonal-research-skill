@@ -47,13 +47,15 @@ python <skill-dir>/scripts/init_workspace.py --subject "对象"
 
 必须使用当前环境可用的联网能力核验事实，不能仅靠模型记忆写报告。搜索摘要只用于发现线索，必须打开原始页面或文档。
 
-**联网容错与代理回退**：优先使用 `webfetch` 工具获取页面内容。若 `webfetch` 返回 `Transport error` 且连续三个不同域名均失败，自动触发代理回退——通过 `bash` 调用 `<skill-dir>/scripts/proxy_fetch.py` 获取同一 URL 的文本内容。该脚本自动读取 Windows 系统代理设置（注册表 `HKCU\Internet Settings\ProxyServer` 或 `HTTPS_PROXY` 环境变量），通过 HTTP CONNECT 隧道绕过网络阻断。使用方式：
+**联网容错与代理回退**：优先使用当前环境实际提供的搜索、浏览或获取工具，打开原始页面。确需取得文本且工具获取失败时，可通过当前 shell 调用轻量回退脚本；不预设某个工具名或 shell 必定存在。脚本使用标准库读取环境/系统 HTTP 代理配置，无配置时直连，保留 TLS 证书和主机名校验，不修改用户代理设置。使用方式：
 
 ```text
-python <skill-dir>/scripts/proxy_fetch.py "https://..." -o <workspace>/build/fetched_page.txt
+python <skill-dir>/scripts/proxy_fetch.py "https://..." --json -o <workspace>/build/fetched_page.txt
 ```
 
-若代理回退也失败（如反爬机制 DataDome），标记该来源为"不可访问（代理穿透失败）"并在 `sources.json` 中记录。每个研究周期开始时应先用 `python <skill-dir>/scripts/proxy_fetch.py "https://en.wikipedia.org/wiki/Birkenstock" -o NUL` 测试代理可用性。
+读取 JSON 的状态、HTTP 状态、最终地址、内容类型、字节与完整性。HTTP 错误、短包、超时、大小超限、证书错误、非文本或不支持的压缩响应均不标成功；脚本请求不压缩内容，默认上限 2 MB。`--timeout` 同时限制单次网络等待与正文读取期限，超过期限取得的内容也拒绝；DNS 由系统解析，不承诺完整调用精确按此秒数结束。仅支持已配置的 HTTP 代理，其他代理类型使用环境可用工具。成功仅说明文本传输完整，还需检查实际正文、登录/挑战页和字符内容；不能据 HTTP 200 就登记为已读有效证据。
+
+获取仍失败时，按实际错误记录不可访问和已尝试的替代来源；不把任意失败推定成某种网络阻断，不作无关站点健康检查。
 
 无法联网或海外域名受阻、且代理回退也失败时，继续完成可核验部分，但必须降低相应结论置信度，并在执行摘要和"研究范围与限制"中披露。
 ### 并行研究策略
@@ -171,23 +173,17 @@ python <skill-dir>/scripts/render_visuals.py data/visuals.json --output-dir visu
 
 ### 图片下载容错
 
-下载图片时优先使用 `webfetch` 或 Python `urllib.request` 直连。若因网络阻断（DNS 投毒、SNI 过滤等）导致下载失败，按以下顺序回退：
+下载时使用当前环境可用的图片获取能力，记录原始地址、最终地址、状态、图片类型与出处。确认文件能够按实际图片格式解码；不能把扩展名为 jpg 的错误页或半截下载当图片。不需要转换的受支持 JPEG/PNG 直接使用；缩略图失败时可尝试官方原图或其他可靠素材，不猜测失败原因。
 
-1. **代理下载**：使用 `<skill-dir>/scripts/curl.exe`（已随 Skill 携带，无需系统安装）通过系统代理获取图片：
-
-```text
-<skill-dir>/scripts/curl.exe -L -s -o <workspace>/images/temp.jpg -A "Mozilla/5.0" "https://upload.wikimedia.org/wikipedia/commons/..."
-```
-
-2. **降级尺寸**：若 Wikimedia Commons 特定缩略图尺寸被拒绝（HTTP 400），改用完整原图 URL（去掉 `/thumb/.../XXXpx-` 路径段），再缩小。使用 Python Pillow 缩至 800px 宽，JPEG 质量 85：
+确需缩图或转换时，先确认当前 Python 有兼容的 Pillow。下面的示例不放大小图，宽度上限 800px，目标高度至少 1，输出非交错 8-bit PNG 并保留透明通道：
 
 ```text
-python -c "import sys; sys.path.insert(0,'<skill-dir>/vendor'); from PIL import Image; img=Image.open('<workspace>/images/temp.jpg'); w,h=img.size; img=img.resize((800,int(h*800/w)),Image.LANCZOS) if w>800 else None; img.save('<workspace>/images/final.jpg','JPEG',quality=85)"
+python -c "from PIL import Image; im=Image.open('<workspace>/images/original.png'); im.load(); im=im.convert('RGBA' if 'A' in im.getbands() or 'transparency' in im.info else 'RGB'); w,h=im.size; im=im.resize((800,max(1,round(h*800/w))),Image.Resampling.LANCZOS) if w>800 else im; im.save('<workspace>/images/final.png','PNG',interlace=False)"
 ```
 
-3. **放弃**：若代理下载也失败（如反爬机制），标记该图片来源为"不可获取"，在"研究范围与限制"中披露缺失，不静默省略。
+如果明确需要 JPEG，先将透明图铺到指定背景，再转 RGB；不要直接把 RGBA 写成 JPEG。环境没有兼容的转换库时，换受支持原图或披露图片限制，不自动安装依赖。
 
-`curl.exe` 在 Windows 10+ 中随系统自带（System32），已复制到 `<skill-dir>/scripts/` 下确保跨环境一致性。
+包内 `curl.exe` 和 Pillow 二进制保留为旧版兼容资源；其 Windows/CPython 架构限定不等于跨平台能力。不要无条件把 vendor 加到转换环境去遮蔽可用库。PDF 构建器使用内置图片解码，支持范围见报告规范，不依赖这组可选二进制。获取失败记录实际原因、替代尝试和影响，报告披露必要的素材缺口。
 
 ## 第六步：叙事写作、读者流与主结构
 

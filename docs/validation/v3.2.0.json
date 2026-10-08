@@ -65,7 +65,7 @@
   "cross_platform_ci": {
     "status": "passed",
     "url": "https://github.com/Rolling-Log/orthogonal-research-skill/actions/runs/37785773713",
-    "tested_commit": "175d6978689574c9ef105932273d3adbbb0d78e7",
+    "tested_commit": "71080b426afcf68b9e4907991e5126166707378a",
     "jobs": [
       {
         "name": "self-test (windows-latest, 3.9)",

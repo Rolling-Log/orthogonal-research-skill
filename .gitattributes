@@ -1,7 +1,1 @@
-* text=auto eol=lf
-
-*.ttf binary
-*.jpg binary
-*.jpeg binary
-*.png binary
-*.pdf binary
+* -text

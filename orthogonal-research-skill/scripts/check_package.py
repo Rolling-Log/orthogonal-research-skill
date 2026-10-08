@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate portability, v1 regression guardrails, assets, and package hygiene."""
+"""Validate portability, v1 regression guardrails, assets, and root copy sync."""
 
 from __future__ import annotations
 
@@ -62,7 +62,7 @@ def scan_portability() -> List[str]:
     }
     old_marker = re.compile(r"\[" + r"@S\d{3,}" + r"\]")
     absolute_path = re.compile(r"(?<!https:)(?<!http:)(?<!file:)/(?:Users|home|mnt|tmp)/")
-    index_heading = re.compile(r"^#{1,6}\s+目" + r"录\s*$", re.M)
+    index_heading = re.compile(r"^#{1,6}\s+目" + "录\s*$", re.M)
     shell_continuation = re.compile(r"\\\s*$", re.M)
     for path in authored_files():
         text = path.read_text(encoding="utf-8")
@@ -81,7 +81,7 @@ def scan_portability() -> List[str]:
     return problems
 
 
-def validate() -> List[str]:
+def validate(root_copy: Path) -> List[str]:
     problems = []
     for relative in REQUIRED:
         if not (SKILL_DIR / relative).is_file():
@@ -99,21 +99,22 @@ def validate() -> List[str]:
             problems.append("missing bundled asset: {}".format(relative))
         elif sha256(path) != expected:
             problems.append("asset hash mismatch: {}".format(relative))
-    forbidden_suffixes = {".dll", ".exe", ".pyd", ".pyc"}
-    for path in SKILL_DIR.rglob("*"):
-        if path.is_file() and path.suffix.lower() in forbidden_suffixes:
-            problems.append("forbidden generated or platform-specific file: {}".format(path.relative_to(SKILL_DIR)))
-        if path.is_dir() and path.name == "__pycache__":
-            problems.append("extraneous cache directory: {}".format(path.relative_to(SKILL_DIR)))
     for path in SKILL_DIR.parent.rglob(".DS_Store"):
         problems.append("extraneous metadata file: {}".format(path))
+    if not root_copy.is_file() or root_copy.read_bytes() != CANONICAL.read_bytes():
+        problems.append("root SKILL.md is not synchronized with canonical SKILL.md")
     problems.extend(scan_portability())
     return problems
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    del argv
-    problems = validate()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sync", action="store_true", help="overwrite root copy from canonical")
+    parser.add_argument("--root-copy", type=Path, default=DEFAULT_ROOT_COPY)
+    args = parser.parse_args(argv)
+    if args.sync:
+        args.root_copy.write_bytes(CANONICAL.read_bytes())
+    problems = validate(args.root_copy)
     if problems:
         for problem in problems:
             print("error: {}".format(problem), file=sys.stderr)

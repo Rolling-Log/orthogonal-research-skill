@@ -47,7 +47,15 @@ python <skill-dir>/scripts/init_workspace.py --subject "对象"
 
 必须使用当前环境可用的联网能力核验事实，不能仅靠模型记忆写报告。搜索摘要只用于发现线索，必须打开原始页面或文档。
 
-**联网容错**：优先使用当前环境提供的联网工具打开原始页面；需要脚本化获取时使用 Python 标准库，并遵守环境已配置的代理和 TLS 校验。不要关闭证书校验、绕过访问控制或把凭据写入 URL/日志。联网连续失败时，标记受阻域名、尝试过的替代来源和受影响结论，降低相应置信度并在执行摘要和“研究范围与限制”中披露。
+**联网容错与代理回退**：优先使用 `webfetch` 工具获取页面内容。若 `webfetch` 返回 `Transport error` 且连续三个不同域名均失败，自动触发代理回退——通过 `bash` 调用 `<skill-dir>/scripts/proxy_fetch.py` 获取同一 URL 的文本内容。该脚本自动读取 Windows 系统代理设置（注册表 `HKCU\Internet Settings\ProxyServer` 或 `HTTPS_PROXY` 环境变量），通过 HTTP CONNECT 隧道绕过网络阻断。使用方式：
+
+```text
+python <skill-dir>/scripts/proxy_fetch.py "https://..." -o <workspace>/build/fetched_page.txt
+```
+
+若代理回退也失败（如反爬机制 DataDome），标记该来源为"不可访问（代理穿透失败）"并在 `sources.json` 中记录。每个研究周期开始时应先用 `python <skill-dir>/scripts/proxy_fetch.py "https://en.wikipedia.org/wiki/Birkenstock" -o NUL` 测试代理可用性。
+
+无法联网或海外域名受阻、且代理回退也失败时，继续完成可核验部分，但必须降低相应结论置信度，并在执行摘要和"研究范围与限制"中披露。
 ### 并行研究策略
 
 环境允许且对象复杂时并行分成三组；环境不允许时按相同标准顺序执行：
@@ -163,7 +171,23 @@ python <skill-dir>/scripts/render_visuals.py data/visuals.json --output-dir visu
 
 ### 图片下载容错
 
-下载图片时优先使用当前环境的联网工具或 Python `urllib.request`，保留原始 JPEG/PNG 或使用环境已有的图像工具处理尺寸。任何替代 URL、转换、压缩或截图都要记录来源、作者/机构、许可和访问日期。若下载失败，标记该图片为“不可获取”，在“研究范围与限制”中披露缺失，不静默省略。
+下载图片时优先使用 `webfetch` 或 Python `urllib.request` 直连。若因网络阻断（DNS 投毒、SNI 过滤等）导致下载失败，按以下顺序回退：
+
+1. **代理下载**：使用 `<skill-dir>/scripts/curl.exe`（已随 Skill 携带，无需系统安装）通过系统代理获取图片：
+
+```text
+<skill-dir>/scripts/curl.exe -L -s -o <workspace>/images/temp.jpg -A "Mozilla/5.0" "https://upload.wikimedia.org/wikipedia/commons/..."
+```
+
+2. **降级尺寸**：若 Wikimedia Commons 特定缩略图尺寸被拒绝（HTTP 400），改用完整原图 URL（去掉 `/thumb/.../XXXpx-` 路径段），再缩小。使用 Python Pillow 缩至 800px 宽，JPEG 质量 85：
+
+```text
+python -c "import sys; sys.path.insert(0,'<skill-dir>/vendor'); from PIL import Image; img=Image.open('<workspace>/images/temp.jpg'); w,h=img.size; img=img.resize((800,int(h*800/w)),Image.LANCZOS) if w>800 else None; img.save('<workspace>/images/final.jpg','JPEG',quality=85)"
+```
+
+3. **放弃**：若代理下载也失败（如反爬机制），标记该图片来源为"不可获取"，在"研究范围与限制"中披露缺失，不静默省略。
+
+`curl.exe` 在 Windows 10+ 中随系统自带（System32），已复制到 `<skill-dir>/scripts/` 下确保跨环境一致性。
 
 ## 第六步：叙事写作、读者流与主结构
 

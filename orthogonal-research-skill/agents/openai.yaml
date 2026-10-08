@@ -1,4 +1,4 @@
 interface:
-  display_name: "横纵深度研究"
-  short_description: "以纵向演进与横向竞争生成可审计的中文深度研究报告"
-  default_prompt: "使用 $orthogonal-research-skill 研究指定对象的演进、竞品与风险，并交付可审计的中文 PDF 报告。"
+  display_name: "orthogonal-research-skill"
+  short_description: "生成含多语证据、图表、图谱与可追溯编号引用的深度报告"
+  default_prompt: "使用 $orthogonal-research-skill 对指定对象完成横纵深度研究，并交付可审计的跨平台 PDF 报告。"

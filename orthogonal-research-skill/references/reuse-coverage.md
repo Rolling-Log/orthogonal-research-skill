@@ -42,4 +42,4 @@ DOCX、PPTX、独立图包或其他格式按用户用途另行组织和验收，
 - 独立执行者仅根据新版 skill 和原始协议研究材料，完成元数据、章节位置与情景配置后生成 HTML 和 5 页 PDF；未修改前端或转换器，也未询问输出格式。
 - 组件测试 27 项中 26 项通过、1 项因 Windows 符号链接权限跳过；交付集成测试 10 项通过，包含原有六类静态图的双格式构建。旧 PDF 构建器、初始化脚本和 skill 包检查通过。
 
-公开验证摘要见[版本验收记录](https://github.com/Rolling-Log/orthogonal-research-skill/blob/main/docs/validation/v3.2.0.json)，样例见[在线演示](https://rolling-log.github.io/orthogonal-research-skill/)。使用 `create_delivery_fixture.py` 可在新目录重建对应输入。这些结果证明已覆盖路径的复用与呈现可用，不证明虚构材料的研究有效性。其他操作系统和浏览器尚未实机验证；新增复杂模型仍需有针对性的验收。
+公开验证摘要见[版本验收记录](https://github.com/Rolling-Log/orthogonal-research-skill/blob/main/docs/validation/v3.2.0.json)，样例见[在线演示](https://rolling-log.github.io/orthogonal-research-skill/)。使用 `create_delivery_fixture.py` 可在新目录重建对应输入。这些结果证明已覆盖路径的复用与呈现可用，不证明虚构材料的研究有效性。跨平台构建检查另见该版本验收记录；浏览器交互目前在 Windows / Chromium 实测，新增复杂模型仍需有针对性的验收。

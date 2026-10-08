@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="generator" content="orthogonal-research-skill"><link rel="icon" href="data:,"><title>信笺交换协议：虚构教学样例</title><style>/* Neutral, readable, offline reader. Controls enhance an already complete page. */
+.rw-page-info{width:100%;font-size:.78rem}.rw-page-info p{max-width:760px}
+:root{--ink:#20252c;--muted:#5f6773;--line:#dce1e7;--surface:#f6f7f9;--accent:#0066cc;--accent-soft:#eff5fc;color-scheme:light}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:6rem}body{margin:0;background:#fff;color:var(--ink);font:16px/1.8 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;overflow-wrap:anywhere}a{color:var(--accent);text-underline-offset:.2em}a:hover{text-decoration-thickness:2px}button,input,select,textarea{font:inherit;max-width:100%;color:inherit}button,select,input[type=search],input[type=number],textarea,.rw-import-label{border:1px solid #aeb7c3;border-radius:5px;background:#fff;padding:.55rem .8rem}button,select,.rw-import-label{cursor:pointer}button{line-height:1.35;min-height:42px}button:hover,.rw-import-label:hover{border-color:var(--accent);background:var(--accent-soft)}button[aria-pressed=true]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}:focus-visible{outline:3px solid var(--accent);outline-offset:3px}input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px;flex-shrink:0}input[type=range]{accent-color:var(--accent)}input:disabled{opacity:1;background:var(--surface)}[hidden]{display:none!important}.rw-js{display:none!important}.rw-js-ready .rw-js{display:revert!important}.rw-js-ready .rw-controls.rw-js{display:flex!important}.rw-js-ready .rw-check.rw-js{display:flex!important}.rw-muted,small{color:var(--muted)}h1,h2,h3,h4{line-height:1.4;text-wrap:pretty;font-weight:650;color:var(--ink);overflow-wrap:anywhere}h1{font-size:clamp(2.1rem,4.8vw,3.5rem);letter-spacing:-.035em;margin:.4em 0}h2{font-size:1.65rem;margin:2.5rem 0 1.2rem}h3{font-size:1.25rem;margin:1.8rem 0 .9rem}h4{font-size:1.05rem;margin:0 0 .55rem}p{margin:.6rem 0 1rem}img,svg{max-width:100%;height:auto}figure{margin:1.5rem 0}figcaption{font-size:.86rem;color:var(--muted);margin:.7rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;background:var(--surface);padding:1rem}code{overflow-wrap:anywhere}blockquote{margin:1.5rem 0;padding:.2rem 1.2rem;border-left:3px solid var(--accent);background:var(--surface)}ul,ol{padding-left:1.5rem}details>summary{cursor:pointer;font-weight:600;min-height:42px;padding:.4rem 0}table{border-collapse:collapse;width:100%;font-size:.91rem;line-height:1.65}th,td{padding:.85rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:anywhere}th{font-weight:600;background:var(--surface)}th p{font-weight:400;font-size:.8rem;color:var(--muted)}table .source-note{font-size:.8rem}.rw-table-wrap{max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:6px;margin:1.1rem 0}.rw-table-wrap table{min-width:540px}.rw-table-wrap:focus-visible{outline-offset:2px}.rw-skip{position:absolute;top:-100px;left:1rem;z-index:100;padding:.7rem 1rem;background:#fff}.rw-skip:focus{top:1rem}.rw-masthead{position:sticky;top:0;z-index:20;min-height:66px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.97);display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem max(1.5rem,calc((100vw - 1260px)/2))}.rw-brand{font-weight:700;white-space:nowrap;text-decoration:none;letter-spacing:.05em}.rw-masthead nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.5rem 1.4rem;font-size:.84rem}.rw-masthead nav a{display:inline-flex;align-items:center;gap:.35rem;text-decoration:none}.rw-progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:30;pointer-events:none}.rw-progress span{display:block;background:var(--accent);height:100%;width:0}.rw-hero{max-width:1260px;margin:0 auto;padding:4.5rem 2rem 3.5rem;border-bottom:1px solid var(--line)}.rw-hero h1{max-width:1000px}.rw-hero>p:not(.rw-eyebrow){max-width:760px}.rw-eyebrow{color:var(--accent);font-size:.81rem;letter-spacing:.05em}.rw-layout{display:grid;grid-template-columns:240px minmax(0,880px);gap:4rem;max-width:1260px;margin:0 auto;padding:2.5rem 2rem 5rem}.rw-sidebar{min-width:0}.rw-toc{position:sticky;top:90px;max-height:calc(100vh - 116px);overflow:auto;padding-right:.6rem;scrollbar-width:thin}.rw-toc nav{font-size:.82rem;line-height:1.6}.rw-toc ol{list-style:none;padding:0;margin:.7rem 0}.rw-toc li{margin:.6rem 0}.rw-toc li a{display:block;text-decoration:none;color:var(--muted);border-left:2px solid transparent;padding:.2rem 0 .2rem .8rem}.rw-toc a[aria-current=true]{border-color:var(--accent);color:var(--accent);font-weight:600}.rw-toc-level-3{padding-left:.85rem}.rw-toc-level-4{padding-left:1.4rem}.rw-reading,.rw-prose{min-width:0}.rw-prose{font-size:1rem;line-height:1.95}.rw-prose>h1:first-child{font-size:2rem}.rw-prose h2{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line)}.rw-prose h3{margin-top:2rem}.rw-prose p{margin-bottom:1.2rem}.rw-prose a,.rw-sources a{word-break:break-word}.rw-prose img{display:block;max-height:720px;width:auto;margin:auto;object-fit:contain}.rw-prose .representative-images{display:flex;flex-wrap:wrap;gap:1.2rem}.rw-prose .representative-images figure{flex:1 1 180px}.rw-prose .representative-images img{height:230px;width:100%;object-fit:contain}.rw-prose .representative-images figcaption{text-align:center}.rw-prose super,.rw-prose sup{font-size:.72em;vertical-align:super;color:var(--accent);line-height:0}.rw-prose font{color:inherit!important}.rw-prose .source-note,.rw-prose .figure-source{font-size:.8rem;color:var(--muted);line-height:1.7}.rw-save{float:right;padding:.2rem .5rem;min-height:32px;font-size:.74rem;white-space:nowrap;font-weight:400;margin-left:.7rem}.rw-widget-heading,.rw-source-title{display:flex;gap:1rem;align-items:flex-start;justify-content:space-between}.rw-widget-heading>h3,.rw-source-title>h3{margin:0}.rw-widget-heading>.rw-save,.rw-source-title>.rw-save{float:none;flex-shrink:0}.rw-explorations{border-top:1px solid var(--line);margin-top:3.5rem}.rw-widget{margin:2rem 0 3.5rem;padding:1.5rem 0;border-top:1px solid var(--line)}.rw-widget>p:first-of-type{color:var(--muted)}.rw-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.rw-controls button{font-size:.85rem}.rw-items{display:grid;gap:1rem;margin:1.2rem 0}.rw-item{border:1px solid var(--line);padding:1.2rem;border-radius:6px}.rw-item p:last-child{margin-bottom:0}.rw-index{color:var(--accent);font-size:.85rem;font-variant-numeric:tabular-nums}.rw-limit{font-size:.9rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.9rem}.rw-outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:1rem 0}.rw-outcomes>div{border-top:1px solid var(--line);padding-top:.6rem}.rw-outcomes dt{color:var(--muted);font-size:.81rem}.rw-outcomes dd{margin:0;font-size:1.12rem}.rw-filter-label{font-size:.85rem;margin:1rem 0}.rw-filter-label input,.rw-filter-label select{margin-left:.5rem;width:min(100%,300px)}.rw-filter-status,.rw-evidence-status,.rw-calc-status{color:var(--muted);font-size:.85rem}.rw-timeline{list-style:none;padding:0;margin:1.5rem 0}.rw-timeline li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:1.3rem;padding:1rem 0 1.6rem}.rw-timeline li>div{padding-left:1.3rem;border-left:2px solid var(--line);position:relative}.rw-timeline li>div:before{content:"";position:absolute;left:-5px;top:8px;width:8px;height:8px;background:var(--accent);border-radius:50%}.rw-timeline time{font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}.rw-timeline p{margin-bottom:.2rem}.rw-node-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}.rw-node{padding:1rem;border:1px solid var(--line);border-radius:5px}.rw-node p{font-size:.88rem;margin-bottom:0}.rw-links{list-style:none;padding:0}.rw-link{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,1.5fr) minmax(0,1fr);gap:.75rem;align-items:center;padding:1rem 0;font-size:.9rem}.rw-link-label{text-align:center;padding:.4rem;border-bottom:2px solid var(--accent);color:var(--muted);font-size:.82rem}.rw-hypothesis .rw-link-label{border-bottom-style:dashed}.rw-selected{border-color:var(--accent)!important;background:var(--accent-soft)}.rw-dimmed{opacity:.42}.rw-check{display:flex;gap:.5rem;align-items:center;font-size:.85rem}.rw-conclusion{padding:1.2rem;background:var(--surface);border-radius:6px}.rw-conclusion p{margin-bottom:0}.rw-image-list{display:grid;gap:1.5rem}.rw-image-stage{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden}.rw-image-stage>img{display:block;margin:auto;width:100%;height:auto}.rw-hotspot{position:absolute;transform:translate(-50%,-50%);width:38px;min-height:38px;padding:0;border:2px solid #fff;border-radius:50%;color:#fff;background:var(--accent);font-size:.83rem;box-shadow:0 0 0 1px var(--accent)}.rw-hotspot:hover{color:var(--accent)}.rw-image-points{font-size:.89rem}.rw-image-points li{margin:.7rem 0}.rw-image-points p{margin:.3rem 0}.rw-glossary>div{padding:1rem 0;border-bottom:1px solid var(--line)}.rw-glossary dt{font-weight:650;color:var(--accent)}.rw-glossary dd{margin:.45rem 0 0}.rw-glossary p{margin-bottom:.45rem}.rw-series-chart{display:block;width:100%;height:auto;margin:1rem 0}.rw-series-chart text{font:12px system-ui,sans-serif;fill:var(--muted)}.rw-grid-line{stroke:var(--line);stroke-width:1}.rw-calculator{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem;margin:1.5rem 0}.rw-inputs{display:grid;gap:1rem;align-content:start}.rw-calc-input label{display:block;font-weight:600}.rw-calc-input input{width:100%;margin:.3rem 0}.rw-calc-input small{display:block;font-size:.76rem}.rw-results{padding:1.2rem;background:var(--surface);border-radius:6px}.rw-results>div+div{border-top:1px solid var(--line);margin-top:1.2rem;padding-top:1.2rem}.rw-results output{font-size:clamp(1.6rem,3vw,2.3rem);font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}.rw-formula{font-size:.77rem;color:var(--muted)}.rw-static-note{font-size:.8rem;color:var(--muted)}.rw-js-ready .rw-static-note{display:none}.rw-source-links{font-size:.78rem;color:var(--muted);line-height:1.8;margin-top:1.3rem}.rw-sources{margin-top:3rem;border-top:1px solid var(--line)}.rw-sources>ol{padding-left:1.4rem}.rw-sources>ol>li{padding:1.4rem 0;border-bottom:1px solid var(--line)}.rw-sources h3{font-size:1rem}.rw-source-meta{font-size:.81rem;display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin:.65rem 0}.rw-source-meta>div{display:flex;gap:.4rem}.rw-source-meta dt{color:var(--muted)}.rw-source-meta dd{margin:0}.rw-full-url{font-size:.8rem;display:block}.rw-source-note{font-size:.81rem;margin:.5rem 0}.rw-sources details{font-size:.8rem}.rw-search{border-bottom:1px solid var(--line);padding-bottom:1.5rem;margin-bottom:2.5rem}.rw-search h2{font-size:1.1rem;margin:0 0 .7rem}.rw-search label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.rw-search-field{display:flex;gap:.5rem}.rw-search-field input{width:100%;min-width:0}.rw-search-field button{flex-shrink:0}.rw-search #rw-search-status{font-size:.85rem;color:var(--muted)}.rw-search-results{font-size:.86rem}#rw-search-results{max-height:360px;overflow:auto;font-size:.86rem;padding-left:1.4rem}#rw-search-results li{margin:.8rem 0}#rw-search-results a{display:block}#rw-search-results p{margin:.2rem 0;font-size:.81rem;color:var(--muted)}mark{color:inherit;background:#fff1b5}.rw-notebook{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line)}.rw-notebook textarea{display:block;width:100%;resize:vertical;min-height:150px;margin:.6rem 0}.rw-notebook .rw-controls button,.rw-import-label{font-size:.85rem}.rw-import-label{position:relative;display:inline-flex;align-items:center;min-height:42px}.rw-import-label:focus-within{outline:3px solid var(--accent);outline-offset:3px}.rw-import-label input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}.rw-notebook [role=status]{font-size:.82rem;color:var(--muted)}#rw-bookmarks{list-style:none;padding:0}#rw-bookmarks li{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line)}#rw-bookmarks button{font-size:.77rem;flex-shrink:0}.rw-footer{max-width:1260px;margin:0 auto;padding:2rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}.rw-footer p{width:100%}.rw-noscript{padding:1rem 2rem;background:var(--surface);max-width:1260px;margin:auto;font-size:.85rem}.rw-dialog{border:1px solid var(--line);border-radius:10px;padding:1.5rem;max-width:min(760px,calc(100vw - 2rem));max-height:calc(100dvh - 3rem);width:100%;overflow:auto;color:var(--ink);box-shadow:0 12px 60px #1825352e}.rw-dialog::backdrop{background:#17233480}.rw-dialog-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem}.rw-dialog-bar h2{font-size:1.2rem;margin:0}.rw-dialog-bar button{font-size:.84rem;flex-shrink:0}.rw-dialog .rw-source-title h3{font-size:1.1rem}.rw-image-dialog{max-width:min(1040px,calc(100vw - 2rem))}#rw-image-viewport{position:relative;overflow:hidden;width:100%;height:min(58vh,590px);background:var(--surface);touch-action:none;cursor:grab}#rw-image-viewport:active{cursor:grabbing}#rw-image-large{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:center;max-width:none;user-select:none;pointer-events:none}#rw-image-description{font-size:.88rem}.rw-image-dialog .rw-controls{font-size:.83rem}
+@media(max-width:1050px){.rw-layout{grid-template-columns:190px minmax(0,1fr);gap:2rem;padding-left:1.5rem;padding-right:1.5rem}.rw-hero{padding-left:1.5rem;padding-right:1.5rem}.rw-toc{font-size:.8rem}}
+@media(max-width:760px){html{scroll-padding-top:7.5rem}.rw-masthead{position:relative;align-items:flex-start;padding:1rem;gap:.6rem}.rw-masthead nav{font-size:.78rem;gap:.4rem .8rem}.rw-brand{font-size:.87rem}.rw-hero{padding:2.5rem 1.2rem 2rem}.rw-hero h1{font-size:2.15rem}.rw-layout{display:block;padding:1.5rem 1.2rem 3rem}.rw-toc{position:static;max-height:none;border-bottom:1px solid var(--line);padding:0 0 1rem;margin-bottom:2rem}.rw-toc nav{max-height:240px;overflow:auto}.rw-prose{font-size:.98rem}.rw-prose h2{font-size:1.45rem}.rw-widget{padding-top:1.2rem}.rw-calculator{grid-template-columns:1fr;gap:1rem}.rw-timeline li{grid-template-columns:80px minmax(0,1fr);gap:.6rem}.rw-timeline li>div{padding-left:.9rem}.rw-node-list{grid-template-columns:1fr}.rw-link{gap:.4rem;grid-template-columns:minmax(0,1fr) minmax(80px,1.2fr) minmax(0,1fr);font-size:.8rem}.rw-item{padding:1rem}.rw-filter-label input,.rw-filter-label select{display:block;margin:.5rem 0;width:100%}.rw-controls{gap:.4rem}.rw-controls button{font-size:.8rem}.rw-footer{padding:1.5rem 1.2rem}.rw-dialog{padding:1rem;max-height:calc(100dvh - 2rem)}.rw-dialog .rw-source-meta{display:block}.rw-dialog .rw-source-meta>div{margin:.35rem 0}.rw-hotspot{width:34px;min-height:34px}.rw-outcomes{grid-template-columns:1fr 1fr}.rw-source-meta>div{flex-wrap:wrap}.rw-source-title{gap:.5rem}.rw-source-title .rw-save{font-size:.7rem}.rw-hero p{font-size:.91rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+@media print{.rw-masthead,.rw-sidebar,.rw-js,.rw-progress,.rw-notebook,.rw-search,.rw-dialog,.rw-footer a{display:none!important}.rw-js-ready .rw-js,.rw-js-ready .rw-controls.rw-js{display:none!important}.rw-layout{display:block;padding:0}.rw-hero{padding:0 0 1rem}.rw-prose,.rw-reading{width:100%}.rw-widget [hidden]{display:revert!important}.rw-widget [data-item],.rw-widget [data-category-item],.rw-widget [data-filter-item]{display:revert!important}.rw-dimmed{opacity:1}.rw-table-wrap{overflow:visible}.rw-table-wrap table{min-width:0}.rw-widget,.rw-item,figure{break-inside:avoid}.rw-toc{display:none}.rw-save{display:none!important}body{font-size:10pt}.rw-source-links a{color:#20252c}.rw-noscript{display:none}}
+
+:root{--accent:#1a5276;--accent-soft:#f1f5f7;}</style></head>
+<body><a class="rw-skip" href="#report-body">跳到正文</a><header class="rw-masthead"><a class="rw-brand" href="#top">横纵研究</a><nav aria-label="阅读工具"><a href="#reader-toc">目录</a><a class="rw-js" href="#reader-search">全文搜索</a><a class="rw-js" href="#reader-notebook">笔记与收藏 <span id="rw-bookmark-count">0</span></a><a href="report.pdf">下载 PDF</a></nav></header>
+<div class="rw-progress rw-js" aria-hidden="true"><span></span></div><main id="top"><header class="rw-hero"><p class="rw-eyebrow">协议研究 · 2026-10-08</p><h1>信笺交换协议：虚构教学样例</h1><p>虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。</p><p class="rw-muted">完整论证、交互探索与可追溯来源</p><p class="rw-muted">完整研究与图解：1,470 字 · 约 3–5 分钟</p></header>
+<div class="rw-layout"><aside class="rw-sidebar"><details id="reader-toc" class="rw-toc"><summary>阅读目录</summary><nav aria-label="章节目录"><ol><li class="rw-toc-level-2"><a href="#report-section-1">一、一句话定义</a></li><li class="rw-toc-level-3"><a href="#report-section-2">执行摘要</a></li><li class="rw-toc-level-3"><a href="#report-section-3">研究范围与限制</a></li><li class="rw-toc-level-2"><a href="#report-section-4">二、纵向分析：从选择到新约束</a></li><li class="rw-toc-level-2"><a href="#report-section-5">三、横向分析：路线与代价</a></li><li class="rw-toc-level-2"><a href="#report-section-6">四、横纵交汇洞察</a></li><li class="rw-toc-level-3"><a href="#component-protocol-process">机制在哪一步受约束</a></li><li class="rw-toc-level-3"><a href="#component-protocol-glossary">容易混淆的概念</a></li><li class="rw-toc-level-3"><a href="#component-protocol-relationships">参与者如何连接</a></li><li class="rw-toc-level-2"><a href="#report-section-7">五、信息来源与方法说明</a></li><li class="rw-toc-level-2"><a href="#research-sources">参考来源</a></li></ol></nav></details></aside><div class="rw-reading">
+<section id="reader-search" class="rw-js rw-search" aria-labelledby="reader-search-title"><h2 id="reader-search-title">在全文中查找</h2><label for="rw-search-input">关键词</label><div class="rw-search-field"><input type="search" id="rw-search-input" placeholder="搜索正文、探索内容和来源"><button type="button" id="rw-search-clear">清除</button></div><p id="rw-search-status" role="status"></p><ol id="rw-search-results"></ol></section>
+<article id="report-body" class="rw-prose"><h2 id="report-section-1">一、一句话定义</h2>
+<p>信笺交换协议是一份虚构的消息交换约定，用版本号、收件确认和重发规则协调发送端与接收端。<sup><a href="#source-S001">[1]</a></sup></p><p class="source-note">说明：[1] 定义和对象均出自虚构设定。</p>
+<h3 id="report-section-2">执行摘要</h3>
+<p>这份小型样例帮助读者练习解释“允许重发以后，如何避免把同一消息执行两次”。发送端保留消息标识，接收端记录处理结果；相同标识再次到达时返回原结果，这叫去重，效果取决于记录保留期限。关键记录均为虚构，当前只能展示有条件的推断，不能据此做现实选择。<sup><a href="#source-S001">[1]</a><a href="#source-S002">[2]</a></sup></p><p class="source-note">说明：[1][2] 教学设定不构成现实证据。</p>
+<h3 id="report-section-3">研究范围与限制</h3>
+<p>虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。没有开展真实检索，来源地址不可作为实际原文。图和交互参数只能检验表达与构建，不能证明对象存在、结论成立或方法有效。</p>
+<p>核心阅读可从“三、横向分析：路线与代价”进入，再回到“四、横纵交汇洞察”核对判断条件；深入阅读包括纵向转折和方法说明。</p>
+<h2 id="report-section-4">二、纵向分析：从选择到新约束</h2>
+<p>首版只约定消息格式，丢失确认时发送端不知道是否成功。加入重发后，丢失更容易恢复，重复执行成为新问题。第三版引入标识与保留期限，缩小重复范围，长期断连仍可能跨过这个期限。<sup><a href="#source-S001">[1]</a></sup></p><p class="source-note">说明：[1] 日期与节点是教学标签，均早于研究截面。</p>
+<p>这些节点的意义在于约束怎样改变。发送端保留消息标识，接收端记录处理结果；相同标识再次到达时返回原结果，这叫去重，效果取决于记录保留期限。下一节据此比较能回应相同问题的路线。<sup><a href="#source-S001">[1]</a></sup></p><p class="source-note">说明：[1] 机制用于说明设定内部的关系，未经现实验证。</p>
+<h2 id="report-section-5">三、横向分析：路线与代价</h2>
+<p>候选路线按同一任务纳入，比较目标、依赖条件和代价；不把不同用途的对象放进一张排名表。<sup><a href="#source-S002">[2]</a></sup></p><p class="source-note">说明：[2] 定性比较，无现实评分。</p>
+<div class="rw-table-wrap" tabindex="0" role="region" aria-label="报告表格"><table><thead><tr><th>路线</th><th>回应的目标</th><th>依赖条件</th><th>代价或边界</th></tr></thead><tbody><tr><td>信笺协议</td><td>确认与重发</td><td>接收端保留标识</td><td>跨期限可能重复</td></tr><tr><td>只发送一次</td><td>避免主动重发</td><td>容忍消息丢失</td><td>无法自动恢复</td></tr><tr><td>集中队列</td><td>统一管理状态</td><td>依赖队列服务</td><td>增加部署环节</td></tr></tbody></table></div>
+<p>表内差异揭示了选择需要承担什么，却没有给出所有条件下的优胜者。观察到的重复也可能来自应用绕过标识检查，不能全部归因于协议期限。<sup><a href="#source-S002">[2]</a></sup></p><p class="source-note">说明：[2] 反方与当前判断保留在同一比较口径中。</p>
+<h2 id="report-section-6">四、横纵交汇洞察</h2>
+<p>重发和去重的演变说明，当前兼容性需要共同理解保留期限；相同字段格式只证明能读消息，不能保证跨版本行为一致。<sup><a href="#source-S001">[1]</a><a href="#source-S002">[2]</a></sup></p><p class="source-note">说明：[1][2] 这是连接历史与当前差异的教学推断。</p>
+<p>要区分这项推断与替代解释，需要取得：相同消息标识在正常、丢失确认和跨保留期限条件下的处理轨迹。本样例没有这类真实证据。若双方对过期标识处理不同，就撤回这组版本可以直接互通的判断。<sup><a href="#source-S002">[2]</a></sup></p><p class="source-note">说明：[2] 未知保留为未知，不因组件完整而提高可信度。</p>
+<section class="rw-widget" id="component-protocol-process" data-kind="process" data-component="protocol-process" aria-labelledby="component-protocol-process.title"><div class="rw-widget-heading"><h3 id="component-protocol-process.title">机制在哪一步受约束</h3><button class="rw-js rw-save" type="button" data-bookmark="component-protocol-process" aria-pressed="false">收藏</button></div><p>虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。</p><div class="rw-controls rw-js" role="group" aria-label="选择内容"><button type="button" data-select-all aria-pressed="true">全部</button><button type="button" data-select="step-1" aria-pressed="false">发送带标识消息</button><button type="button" data-select="step-2" aria-pressed="false">检查已有结果</button><button type="button" data-select="step-3" aria-pressed="false">确认或重试</button></div><div class="rw-items"><article class="rw-item " data-item="step-1" ><h4><span class="rw-index">01</span> 发送带标识消息</h4><p>保留消息标识和发送状态。</p></article><article class="rw-item " data-item="step-2" ><h4><span class="rw-index">02</span> 检查已有结果</h4><p>接收端在保留期限内查询该标识。</p></article><article class="rw-item " data-item="step-3" ><h4><span class="rw-index">03</span> 确认或重试</h4><p>返回原结果，未获确认时按约定重试。</p></article></div><p class="rw-source-links">依据：<a href="#source-S001" data-source="S001" title="虚构设定与演变稿">[1]</a> · <a href="#source-S002" data-source="S002" title="虚构路线与数据对照稿">[2]</a></p></section>
+
+<section class="rw-widget" id="component-protocol-glossary" data-kind="glossary" data-component="protocol-glossary" aria-labelledby="component-protocol-glossary.title"><div class="rw-widget-heading"><h3 id="component-protocol-glossary.title">容易混淆的概念</h3><button class="rw-js rw-save" type="button" data-bookmark="component-protocol-glossary" aria-pressed="false">收藏</button></div><p>虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。</p><label class="rw-js rw-filter-label">查找术语 <input type="search" data-filter placeholder="术语、定义或例子"></label><dl class="rw-glossary"><div data-filter-item><dt>去重</dt><dd><p>识别再次到达的同一消息并返回已记录结果。</p><p><b>例子：</b>期限内相同标识返回原结果。</p><p><b>反例：</b>字段能解析不代表已经去重。</p></dd></div><div data-filter-item><dt>保留期限</dt><dd><p>接收端保存标识和结果的时间范围。</p><p><b>例子：</b>双方使用同一个约定期限。</p><p><b>反例：</b>期限届满不能假定记录仍在。</p></dd></div></dl><p class="rw-filter-status rw-js" role="status"></p><p class="rw-source-links">依据：<a href="#source-S001" data-source="S001" title="虚构设定与演变稿">[1]</a> · <a href="#source-S002" data-source="S002" title="虚构路线与数据对照稿">[2]</a></p></section>
+
+<section class="rw-widget" id="component-protocol-relationships" data-kind="relationships" data-component="protocol-relationships" aria-labelledby="component-protocol-relationships.title"><div class="rw-widget-heading"><h3 id="component-protocol-relationships.title">参与者如何连接</h3><button class="rw-js rw-save" type="button" data-bookmark="component-protocol-relationships" aria-pressed="false">收藏</button></div><p>虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。</p><label class="rw-js rw-filter-label">查看一个节点的关系 <select data-node><option value="">全部节点</option><option value="node-1">信笺协议</option><option value="node-2">发送端</option><option value="node-3">接收端</option></select></label><div class="rw-node-list"><div class="rw-node" data-node-item="node-1"><h4>信笺协议</h4><p>虚构设定中承担协作环节的角色。</p></div><div class="rw-node" data-node-item="node-2"><h4>发送端</h4><p>虚构设定中承担协作环节的角色。</p></div><div class="rw-node" data-node-item="node-3"><h4>接收端</h4><p>虚构设定中承担协作环节的角色。</p></div></div><p class="rw-muted">实线：事实关系；虚线：待检验关系。</p><ul class="rw-links"><li class="rw-link rw-fact" data-from="node-1" data-to="node-2"><b>信笺协议</b><span class="rw-link-label">约定发送 → <small>事实</small></span><b>发送端</b></li><li class="rw-link rw-fact" data-from="node-1" data-to="node-3"><b>信笺协议</b><span class="rw-link-label">约定接收 → <small>事实</small></span><b>接收端</b></li></ul><p class="rw-source-links">依据：<a href="#source-S001" data-source="S001" title="虚构设定与演变稿">[1]</a> · <a href="#source-S002" data-source="S002" title="虚构路线与数据对照稿">[2]</a></p></section>
+<h2 id="report-section-7">五、信息来源与方法说明</h2>
+<p>正文和交互组件复用同一来源台账；两个虚构来源来自同一教学设定，不构成独立印证。所有来源、数字与示意图均明确虚构，只用于验证纵向、横向和交汇内容能否进入同一交付流程。</p></article><section id="research-sources" class="rw-sources"><h2>参考来源</h2><p class="rw-muted">来源元数据完整保留；外部原文链接需要联网。</p><ol><li id="source-S001" data-source-record="S001" value="1"><div class="rw-source-title"><h3>信笺交换协议：虚构设定与演变稿</h3><button class="rw-js rw-save" type="button" data-bookmark="source-S001" aria-pressed="false">收藏来源</button></div><dl class="rw-source-meta"><div><dt>简称</dt><dd>虚构设定与演变稿</dd></div><div><dt>发布者</dt><dd>虚构教学编辑组</dd></div><div><dt>发布日期</dt><dd>2026-09-30</dd></div><div><dt>访问日期</dt><dd>2026-10-08</dd></div></dl><a class="rw-full-url" href="https://example.invalid/fictional/protocol/s001" target="_blank" rel="noopener noreferrer">https://example.invalid/fictional/protocol/s001</a><p class="rw-source-note"><b>说明：</b>虚构来源，无真实原文，也没有联网访问；URL为保留的.invalid域名。日期和tier字段只是结构演示，不是真实可靠性评级。两稿来自同一设定，不能视为独立证据。产品结构图由本脚本绘制，只是示意。</p><p class="rw-source-note"><b>语言：</b>zh-CN</p><p class="rw-source-note"><b>地域：</b>虚构地域</p><details><summary>更多来源元数据</summary><pre>{
+  &quot;perspective_group&quot;: &quot;虚构教学&quot;,
+  &quot;tier&quot;: 3,
+  &quot;type&quot;: &quot;fictional&quot;,
+  &quot;supports&quot;: [
+    &quot;C001&quot;,
+    &quot;C002&quot;,
+    &quot;C004&quot;
+  ],
+  &quot;independence_key&quot;: &quot;fictional-protocol&quot;
+}</pre></details></li><li id="source-S002" data-source-record="S002" value="2"><div class="rw-source-title"><h3>信笺交换协议：虚构路线与数据对照稿</h3><button class="rw-js rw-save" type="button" data-bookmark="source-S002" aria-pressed="false">收藏来源</button></div><dl class="rw-source-meta"><div><dt>简称</dt><dd>虚构路线与数据对照稿</dd></div><div><dt>发布者</dt><dd>虚构教学编辑组</dd></div><div><dt>发布日期</dt><dd>2026-09-30</dd></div><div><dt>访问日期</dt><dd>2026-10-08</dd></div></dl><a class="rw-full-url" href="https://example.invalid/fictional/protocol/s002" target="_blank" rel="noopener noreferrer">https://example.invalid/fictional/protocol/s002</a><p class="rw-source-note"><b>说明：</b>虚构来源，无真实原文，也没有联网访问；URL为保留的.invalid域名。日期和tier字段只是结构演示，不是真实可靠性评级。两稿来自同一设定，不能视为独立证据。产品结构图由本脚本绘制，只是示意。</p><p class="rw-source-note"><b>语言：</b>zh-CN</p><p class="rw-source-note"><b>地域：</b>虚构地域</p><details><summary>更多来源元数据</summary><pre>{
+  &quot;perspective_group&quot;: &quot;虚构教学&quot;,
+  &quot;tier&quot;: 3,
+  &quot;type&quot;: &quot;fictional&quot;,
+  &quot;supports&quot;: [
+    &quot;C003&quot;,
+    &quot;C004&quot;,
+    &quot;D001&quot;
+  ],
+  &quot;independence_key&quot;: &quot;fictional-protocol&quot;
+}</pre></details></li></ol></section>
+<section id="reader-notebook" class="rw-notebook rw-js" aria-labelledby="reader-notebook-title"><h2 id="reader-notebook-title">我的阅读记录</h2><p class="rw-muted">记录按报告分别保存于当前浏览器。重要笔记请导出；清除浏览器数据会移除本地记录。</p><label for="rw-notes">阅读笔记</label><textarea id="rw-notes" rows="7" maxlength="20000" placeholder="记下问题、证据和待核验的想法"></textarea><p id="rw-storage-status" role="status"></p><div class="rw-controls"><button type="button" id="rw-export">导出记录</button><label class="rw-import-label">导入记录<input type="file" id="rw-import" accept="application/json,.json"></label><button type="button" id="rw-recover" hidden>下载旧记录副本</button></div><p id="rw-import-status" role="status"></p><h3>已收藏</h3><ul id="rw-bookmarks"></ul></section>
+</div></div></main><footer class="rw-footer"><span>信笺交换协议：虚构教学样例</span><a href="#top">回到开头 ↑</a><p>页面和交互可离线使用；外部原文链接需要联网。</p><details class="rw-page-info"><summary>页面信息</summary><p>强调色依据：主题编辑选择，非官方品牌色；显示色可能为保证文字对比度做过调整。</p></details></footer>
+<noscript><p class="rw-noscript">当前未启用 JavaScript。全文、组件全部内容、默认计算结果和来源仍可阅读；搜索与本地笔记需要启用脚本。</p></noscript>
+<dialog id="rw-source-dialog" class="rw-dialog" aria-labelledby="rw-source-dialog-title"><div class="rw-dialog-bar"><h2 id="rw-source-dialog-title">来源详情</h2><button type="button" data-close-dialog>关闭</button></div><div id="rw-source-dialog-body"></div></dialog>
+<dialog id="rw-image-dialog" class="rw-dialog rw-image-dialog" aria-labelledby="rw-image-dialog-title"><div class="rw-dialog-bar"><h2 id="rw-image-dialog-title">图片检视</h2><button type="button" data-close-dialog>关闭</button></div><div class="rw-controls"><label for="rw-image-zoom">放大</label><input type="range" id="rw-image-zoom" min="1" max="4" step="0.25" value="1"><output id="rw-image-scale">1×</output><button type="button" id="rw-image-reset">还原</button></div><div id="rw-image-viewport" tabindex="0" role="region" aria-label="放大图片，可拖动或用方向键移动"><img id="rw-image-large" alt=""></div><p id="rw-image-description"></p></dialog>
+<script id="research-web-data" type="application/json">{"version":1,"study":{"id":"fictional-protocol","as_of":"2026-10-08","title":"信笺交换协议：虚构教学样例"},"components":[{"id":"protocol-process","kind":"process","title":"机制在哪一步受约束","intro":"虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。","source_ids":["S001","S002"],"steps":[{"id":"step-1","title":"发送带标识消息","body":"保留消息标识和发送状态。"},{"id":"step-2","title":"检查已有结果","body":"接收端在保留期限内查询该标识。"},{"id":"step-3","title":"确认或重试","body":"返回原结果，未获确认时按约定重试。"}]},{"id":"protocol-glossary","kind":"glossary","title":"容易混淆的概念","intro":"虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。","source_ids":["S001","S002"],"items":[{"id":"term-1","term":"去重","definition":"识别再次到达的同一消息并返回已记录结果。","example":"期限内相同标识返回原结果。","counterexample":"字段能解析不代表已经去重。"},{"id":"term-2","term":"保留期限","definition":"接收端保存标识和结果的时间范围。","example":"双方使用同一个约定期限。","counterexample":"期限届满不能假定记录仍在。"}]},{"id":"protocol-relationships","kind":"relationships","title":"参与者如何连接","intro":"虚构教学样例；对象、记录、日期、数字与来源均为预设，不代表现实研究。","source_ids":["S001","S002"],"nodes":[{"id":"node-1","label":"信笺协议","detail":"虚构设定中承担协作环节的角色。"},{"id":"node-2","label":"发送端","detail":"虚构设定中承担协作环节的角色。"},{"id":"node-3","label":"接收端","detail":"虚构设定中承担协作环节的角色。"}],"links":[{"from":"node-1","to":"node-2","label":"约定发送","kind":"fact"},{"from":"node-1","to":"node-3","label":"约定接收","kind":"fact"}]}],"headings":[{"id":"report-section-1","level":2,"title":"一、一句话定义"},{"id":"report-section-2","level":3,"title":"执行摘要"},{"id":"report-section-3","level":3,"title":"研究范围与限制"},{"id":"report-section-4","level":2,"title":"二、纵向分析：从选择到新约束"},{"id":"report-section-5","level":2,"title":"三、横向分析：路线与代价"},{"id":"report-section-6","level":2,"title":"四、横纵交汇洞察"},{"id":"component-protocol-process","title":"机制在哪一步受约束","level":3},{"id":"component-protocol-glossary","title":"容易混淆的概念","level":3},{"id":"component-protocol-relationships","title":"参与者如何连接","level":3},{"id":"report-section-7","level":2,"title":"五、信息来源与方法说明"},{"id":"research-sources","title":"参考来源","level":2}],"sources":{"S001":{"id":"S001","title":"信笺交换协议：虚构设定与演变稿"},"S002":{"id":"S002","title":"信笺交换协议：虚构路线与数据对照稿"}}}</script><script>/* All enhancements are local and deterministic. No fetch, dependencies, eval or analytics. */
+(() => {
+  'use strict';
+  const $ = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+  const data = JSON.parse($('#research-web-data').textContent);
+  const components = new Map(data.components.map(c => [c.id, c]));
+  document.documentElement.classList.add('rw-js-ready');
+  const narrowScreen = matchMedia('(max-width:760px)');
+  const setTocDefault = () => { $('#reader-toc').open = !narrowScreen.matches; };
+  setTocDefault();
+  if (narrowScreen.addEventListener) narrowScreen.addEventListener('change', setTocDefault);
+  else narrowScreen.addListener(setTocDefault);
+  const announce = (element, text) => { if (element) element.textContent = text; };
+  const normalize = text => String(text).normalize('NFKC').toLocaleLowerCase();
+  const number = value => String(value);
+  // Error-free partial sums mirror Python's math.fsum, including cancellation.
+  function fsum(values) {
+    const partials = [];
+    for (let x of values) {
+      let index = 0;
+      for (let y of partials) {
+        if (Math.abs(x) < Math.abs(y)) [x, y] = [y, x];
+        const high = x + y, low = y - (high - x);
+        if (low) partials[index++] = low;
+        x = high;
+      }
+      partials.length = index;
+      if (x) partials.push(x);
+    }
+    let n = partials.length, high = 0, low = 0;
+    if (n) {
+      high = partials[--n];
+      while (n) { const x = high, y = partials[--n]; high = x + y; low = y - (high - x); if (low) break; }
+      if (n && ((low < 0 && partials[n - 1] < 0) || (low > 0 && partials[n - 1] > 0))) { const y = low * 2, x = high + y; if (y === x - high) high = x; }
+    }
+    return high;
+  }
+  const anchors = new Map(data.headings.map(h => [h.id, h.title]));
+  Object.values(data.sources).forEach(s => anchors.set('source-' + s.id, s.title));
+  $$('.rw-prose h1[id],.rw-prose h2[id],.rw-prose h3[id],.rw-prose h4[id]').filter(h => !h.closest('.rw-widget')).forEach(h => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'rw-save rw-js'; b.dataset.bookmark = h.id;
+    b.setAttribute('aria-label', '收藏章节：' + anchors.get(h.id)); b.setAttribute('aria-pressed', 'false');
+    b.textContent = '收藏'; h.append(b);
+  });
+
+  // Each study has its own notebook. Corrupt stored data is retained for recovery.
+  const storageKey = 'orthogonal:reader:v1:' + encodeURIComponent(data.study.id) + ':' + encodeURIComponent(data.study.as_of);
+  const blank = () => ({version: 1, study: data.study.id, as_of: data.study.as_of, notes: '', bookmarks: []});
+  let record = blank(), recovery = null, storageOK = true;
+  function validateRecord(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value) || value.version !== 1 || value.study !== data.study.id || value.as_of !== data.study.as_of || typeof value.notes !== 'string' || !Array.isArray(value.bookmarks)) throw Error('这份记录不属于当前报告及研究截面，或文件格式不受支持。');
+    if (value.notes.length > 20000 || value.bookmarks.length > 500) throw Error('记录过大；当前笔记保持不变。');
+    if (value.bookmarks.some(id => typeof id !== 'string' || !anchors.has(id))) throw Error('记录含有当前报告不存在的收藏位置；当前笔记保持不变。');
+    return {version: 1, study: data.study.id, as_of: data.study.as_of, notes: value.notes, bookmarks: [...new Set(value.bookmarks)]};
+  }
+  try { const raw = localStorage.getItem(storageKey); if (raw !== null) { try { record = validateRecord(JSON.parse(raw)); } catch (_) { recovery = raw; } } } catch (_) { storageOK = false; }
+  function status() {
+    announce($('#rw-storage-status'), recovery !== null ? '检测到旧记录格式异常，原始内容仍保留。当前编辑不会覆盖旧记录，请导出保存。' : storageOK ? '已自动保存在当前浏览器；笔记 ' + record.notes.length + ' / 20000 字符。' : '浏览器无法持久保存，当前记录仅在本页暂存，请导出文件保留。');
+    $('#rw-recover').hidden = recovery === null;
+  }
+  function persist() {
+    if (recovery === null) { try { localStorage.setItem(storageKey, JSON.stringify(record)); storageOK = true; } catch (_) { storageOK = false; } }
+    status();
+  }
+  function syncBookmarks() {
+    $$('[data-bookmark]').forEach(b => { const saved = record.bookmarks.includes(b.dataset.bookmark); b.setAttribute('aria-pressed', String(saved)); b.textContent = saved ? '已收藏' : (b.dataset.bookmark.startsWith('source-') ? '收藏来源' : '收藏'); });
+    $('#rw-bookmark-count').textContent = String(record.bookmarks.length);
+    const list = $('#rw-bookmarks'); list.replaceChildren();
+    if (!record.bookmarks.length) { const li = document.createElement('li'); li.textContent = '尚未收藏。可使用章节、组件和来源旁的收藏按钮。'; list.append(li); }
+    record.bookmarks.forEach(id => {
+      const li = document.createElement('li'), a = document.createElement('a'), b = document.createElement('button');
+      a.href = '#' + id; a.textContent = anchors.get(id); b.type = 'button'; b.dataset.removeBookmark = id; b.textContent = '移除'; b.setAttribute('aria-label', '移除收藏：' + anchors.get(id));
+      li.append(a, b); list.append(li);
+    });
+  }
+  $('#rw-notes').value = record.notes; status(); syncBookmarks();
+  $('#rw-notes').addEventListener('input', event => { record.notes = event.target.value.slice(0, 20000); persist(); });
+  document.addEventListener('click', event => {
+    const save = event.target.closest('[data-bookmark]');
+    if (save && anchors.has(save.dataset.bookmark)) {
+      const id = save.dataset.bookmark;
+      record.bookmarks = record.bookmarks.includes(id) ? record.bookmarks.filter(v => v !== id) : [...record.bookmarks, id];
+      persist(); syncBookmarks();
+    }
+    const remove = event.target.closest('[data-remove-bookmark]');
+    if (remove) { record.bookmarks = record.bookmarks.filter(id => id !== remove.dataset.removeBookmark); persist(); syncBookmarks(); }
+  });
+  function download(text, filename) {
+    const url = URL.createObjectURL(new Blob([text], {type: 'application/json;charset=utf-8'}));
+    const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  const filename = data.study.id.replace(/[^a-z0-9_-]/gi, '_').slice(0, 90) || 'research';
+  $('#rw-export').addEventListener('click', () => download(JSON.stringify({...record, title: data.study.title, exported_at: new Date().toISOString()}, null, 2), filename + '-notes.json'));
+  $('#rw-recover').addEventListener('click', () => { if (recovery !== null) download(recovery, filename + '-recovery.json'); });
+  $('#rw-import').addEventListener('change', async event => {
+    const file = event.target.files[0]; if (!file) return;
+    try {
+      if (file.size > 300000) throw Error('文件超过 300 KB，当前记录保持不变。');
+      const incoming = validateRecord(JSON.parse(await file.text()));
+      // Merge instead of silently overwriting current user work.
+      let notes = record.notes;
+      if (incoming.notes && incoming.notes !== record.notes && !record.notes.includes(incoming.notes)) notes = notes ? notes + '\n\n——导入记录——\n' + incoming.notes : incoming.notes;
+      if (notes.length > 20000) throw Error('合并后笔记超过 20000 字符，请先整理记录。当前记录保持不变。');
+      record = {...record, notes, bookmarks: [...new Set([...record.bookmarks, ...incoming.bookmarks])]};
+      $('#rw-notes').value = record.notes; persist(); syncBookmarks(); announce($('#rw-import-status'), '已合并导入笔记和收藏。');
+    } catch (error) { announce($('#rw-import-status'), error instanceof SyntaxError ? '文件不是有效的 JSON；当前记录保持不变。' : error.message); }
+    event.target.value = '';
+  });
+
+  // Build full-text search from readable content, without replacing report text.
+  let searchIndex = [];
+  $$('.rw-prose h1,.rw-prose h2,.rw-prose h3,.rw-prose h4,.rw-prose p,.rw-prose li,.rw-prose tr,.rw-widget h3,.rw-widget .rw-item,.rw-widget li,.rw-widget tr,.rw-widget .rw-glossary>div,.rw-widget .rw-node,.rw-widget .rw-limit,.rw-widget .rw-conclusion,.rw-sources>ol>li').forEach((element, i) => {
+    const copy = element.cloneNode(true); $$('button,input,select,textarea', copy).forEach(n => n.remove());
+    const text = copy.textContent.trim(); if (!text) return;
+    if (!element.id) element.id = 'rw-search-block-' + i;
+    const section = element.closest('.rw-widget,[data-source-record]');
+    const title = section ? ($('h3', section)?.textContent || '来源') : (element.matches('h1,h2,h3,h4') ? text : (() => { let p = element; while (p) { if (p.matches('h1,h2,h3,h4')) return p.textContent.replace(/已收藏|收藏/g, '').trim(); p = p.previousElementSibling; } return '正文'; })());
+    searchIndex.push({element, text, normalized: normalize(text), title});
+  });
+  function search() {
+    const query = normalize($('#rw-search-input').value.trim()).slice(0, 160), list = $('#rw-search-results'); list.replaceChildren();
+    if (!query) { announce($('#rw-search-status'), '输入关键词检索完整报告。'); return; }
+    const hits = searchIndex.filter(item => item.normalized.includes(query));
+    announce($('#rw-search-status'), '找到 ' + hits.length + ' 处匹配' + (hits.length > 80 ? '，先显示前 80 处。' : '。'));
+    hits.slice(0, 80).forEach(hit => {
+      const li = document.createElement('li'), a = document.createElement('a'), p = document.createElement('p');
+      a.href = '#' + hit.element.id; a.textContent = hit.title.replace(/已收藏|收藏/g, '').trim().slice(0, 100);
+      const pos = hit.normalized.indexOf(query), start = Math.max(0, pos - 45), end = Math.min(hit.text.length, pos + query.length + 90);
+      p.textContent = (start ? '…' : '') + hit.text.slice(start, end) + (end < hit.text.length ? '…' : '');
+      a.addEventListener('click', () => {
+        const widget = hit.element.closest('.rw-widget');
+        if (widget) {
+          $('[data-select-all]', widget)?.click();
+          $$('[data-filter],[data-category],[data-node]', widget).forEach(control => { control.value = ''; control.dispatchEvent(new Event(control.matches('[data-filter]') ? 'input' : 'change', {bubbles:true})); });
+          $$('[data-series-toggle]', widget).forEach(control => { control.checked = true; control.dispatchEvent(new Event('change', {bubbles:true})); });
+        }
+        let current = hit.element;
+        while (current && current !== document.body) { current.hidden = false; if (current.tagName === 'DETAILS') current.open = true; current = current.parentElement; }
+      });
+      li.append(a, p); list.append(li);
+    });
+  }
+  let searchTimer; $('#rw-search-input').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(search, 120); });
+  $('#rw-search-clear').addEventListener('click', () => { $('#rw-search-input').value = ''; search(); $('#rw-search-input').focus(); }); search();
+
+  $$('.rw-widget').forEach(widget => {
+    const component = components.get(widget.dataset.component);
+    if (!component) return;
+    $$('[data-select],[data-select-all]', widget).forEach(button => button.addEventListener('click', () => {
+      $$('[data-select],[data-select-all]', widget).forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      $$('[data-item]', widget).forEach(item => { item.hidden = !button.hasAttribute('data-select-all') && item.dataset.item !== button.dataset.select; });
+    }));
+    const category = $('[data-category]', widget);
+    if (category) category.addEventListener('change', () => $$('[data-category-item]', widget).forEach(item => { item.hidden = Boolean(category.value) && item.dataset.categoryItem !== category.value; }));
+    const filter = $('[data-filter]', widget);
+    if (filter) filter.addEventListener('input', () => {
+      const needle = normalize(filter.value.trim()); let count = 0;
+      $$('[data-filter-item]', widget).forEach(item => { item.hidden = !normalize(item.textContent).includes(needle); if (!item.hidden) count++; });
+      announce($('.rw-filter-status', widget), count ? '显示 ' + count + ' 项。' : '没有匹配项，清空筛选可恢复全部内容。');
+    });
+    const node = $('[data-node]', widget);
+    if (node) node.addEventListener('change', () => {
+      const connected = new Set([node.value]);
+      $$('.rw-link', widget).forEach(link => { const yes = !node.value || link.dataset.from === node.value || link.dataset.to === node.value; link.classList.toggle('rw-dimmed', !yes); if (yes) { connected.add(link.dataset.from); connected.add(link.dataset.to); } });
+      $$('[data-node-item]', widget).forEach(item => { item.classList.toggle('rw-selected', item.dataset.nodeItem === node.value); item.classList.toggle('rw-dimmed', Boolean(node.value) && !connected.has(item.dataset.nodeItem)); });
+    });
+    $$('[data-evidence]', widget).forEach(input => input.addEventListener('change', () => {
+      input.closest('.rw-item').classList.toggle('rw-selected', input.checked);
+      announce($('.rw-evidence-status', widget), '当前选择 ' + $$('[data-evidence]:checked', widget).length + ' 项材料；研究结论不随勾选改变。');
+    }));
+    $$('[data-series-toggle]', widget).forEach(input => input.addEventListener('change', () => {
+      $$('[data-series],[data-series-col]', widget).filter(n => (n.dataset.series || n.dataset.seriesCol) === input.dataset.seriesToggle).forEach(n => { n.style.display = input.checked ? '' : 'none'; });
+    }));
+    if (component.kind === 'calculator') {
+      const inputs = $$('[data-input]', widget); inputs.forEach(input => { input.disabled = false; });
+      function calculate() {
+        const values = {};
+        for (const input of inputs) {
+          if (input.value.trim() === '' || !input.validity.valid || !Number.isFinite(Number(input.value))) { announce($('.rw-calc-status', widget), '请按给定范围和步长输入有效数值；保留上次有效结果。'); return; }
+          values[input.dataset.input] = Number(input.value);
+        }
+        const results = component.outputs.map(output => ({id: output.id, value: fsum([output.base, ...output.terms.map(term => values[term.input] * term.coefficient)])}));
+        if (results.some(output => !Number.isFinite(output.value))) { announce($('.rw-calc-status', widget), '计算超出可表示范围；保留上次有效结果。'); return; }
+        results.forEach(result => { const output = $$('[data-output]', widget).find(el => el.dataset.output === result.id); output.textContent = number(result.value); });
+        announce($('.rw-calc-status', widget), '结果已按当前输入更新；假设与口径见下方。');
+      }
+      inputs.forEach(input => input.addEventListener('input', calculate));
+    }
+  });
+
+  // Source links always have real fallback anchors. Native dialogs retain keyboard focus.
+  const sourceDialog = $('#rw-source-dialog'), imageDialog = $('#rw-image-dialog');
+  document.addEventListener('click', event => {
+    const sourceLink = event.target.closest('a[data-source]');
+    if (sourceLink && typeof sourceDialog.showModal === 'function') {
+      const source = document.getElementById('source-' + sourceLink.dataset.source);
+      if (!source) return;
+      event.preventDefault(); const copy = source.cloneNode(true); copy.removeAttribute('id'); $$('[id]', copy).forEach(n => n.removeAttribute('id'));
+      const body = $('#rw-source-dialog-body'); body.replaceChildren(...Array.from(copy.childNodes)); syncBookmarks(); sourceDialog.showModal();
+    }
+    const close = event.target.closest('[data-close-dialog]'); if (close) close.closest('dialog').close();
+  });
+  [sourceDialog, imageDialog].forEach(dialog => dialog.addEventListener('click', event => { if (event.target !== dialog) return; const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); }));
+
+  let zoom = 1, panX = 0, panY = 0, drag = null;
+  const viewport = $('#rw-image-viewport'), large = $('#rw-image-large'), zoomInput = $('#rw-image-zoom');
+  function transform() {
+    const ratio = large.naturalWidth / (large.naturalHeight || 1) || 1, w = Math.min(viewport.clientWidth, viewport.clientHeight * ratio), h = w / ratio;
+    const maxX = Math.max(0, (w * zoom - viewport.clientWidth) / 2), maxY = Math.max(0, (h * zoom - viewport.clientHeight) / 2);
+    panX = Math.max(-maxX, Math.min(maxX, panX)); panY = Math.max(-maxY, Math.min(maxY, panY));
+    large.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + zoom + ')'; zoomInput.value = String(zoom); $('#rw-image-scale').textContent = zoom + '×';
+  }
+  $$('.rw-image').forEach(figure => {
+    function open(pointIndex) {
+      if (typeof imageDialog.showModal !== 'function') return;
+      const image = $('img', figure), widget = figure.closest('.rw-widget'), component = components.get(widget.dataset.component), item = component.items.find(i => component.id + '.' + i.id === figure.dataset.image);
+      large.src = image.src; large.alt = image.alt; $('#rw-image-dialog-title').textContent = item.caption || item.alt; zoom = 1; panX = panY = 0;
+      const point = Number.isInteger(pointIndex) ? item.points[pointIndex] : null;
+      $('#rw-image-description').textContent = point ? point.title + '：' + point.body : item.caption;
+      imageDialog.showModal();
+      if (point) { zoom = 2; const ratio = image.naturalWidth / image.naturalHeight, w = Math.min(viewport.clientWidth, viewport.clientHeight * ratio); panX = (.5 - point.x / 100) * w * zoom; panY = (.5 - point.y / 100) * w / ratio * zoom; }
+      transform();
+    }
+    $('[data-image-open]', figure)?.addEventListener('click', () => open());
+    $$('[data-image-point]', figure).forEach(button => button.addEventListener('click', () => open(Number(button.dataset.imagePoint))));
+  });
+  zoomInput.addEventListener('input', () => { zoom = Number(zoomInput.value); transform(); });
+  $('#rw-image-reset').addEventListener('click', () => { zoom = 1; panX = panY = 0; transform(); });
+  large.addEventListener('load', transform);
+  viewport.addEventListener('pointerdown', event => { if (zoom <= 1 || event.button !== 0) return; drag = {x: event.clientX, y: event.clientY, px: panX, py: panY}; viewport.setPointerCapture(event.pointerId); event.preventDefault(); });
+  viewport.addEventListener('pointermove', event => { if (!drag) return; panX = drag.px + event.clientX - drag.x; panY = drag.py + event.clientY - drag.y; transform(); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(type => viewport.addEventListener(type, () => { drag = null; }));
+  viewport.addEventListener('keydown', event => { const d = {ArrowLeft:[32,0],ArrowRight:[-32,0],ArrowUp:[0,32],ArrowDown:[0,-32]}[event.key]; if (d && zoom > 1) { event.preventDefault(); panX += d[0]; panY += d[1]; transform(); } });
+
+  // Explicit end-of-document handling keeps the last section reachable and current.
+  const navLinks = $$('#reader-toc a'), tracked = navLinks.map(link => ({link, element: document.getElementById(decodeURIComponent(link.hash.slice(1)))})).filter(v => v.element);
+  let pending = false;
+  function progress() {
+    pending = false; const max = document.documentElement.scrollHeight - innerHeight;
+    $('.rw-progress span').style.width = (max <= 0 ? 100 : Math.min(100, scrollY / max * 100)) + '%';
+    let active = tracked[0]; tracked.forEach(item => { if (item.element.getBoundingClientRect().top <= 150) active = item; });
+    if (max > 0 && scrollY >= max - 3) active = tracked[tracked.length - 1];
+    navLinks.forEach(link => { if (active && active.link === link) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current'); });
+  }
+  addEventListener('scroll', () => { if (!pending) { pending = true; requestAnimationFrame(progress); } }, {passive:true});
+  addEventListener('resize', () => { progress(); if (imageDialog.open) transform(); }); progress();
+})();
+</script></body></html>

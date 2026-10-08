@@ -18,4 +18,4 @@ Upstream: https://github.com/adobe-fonts/source-han-sans
 
 Pillow, curl.exe, browser binaries, and network credentials are not bundled. External sources, images, and datasets used in generated reports remain subject to their own terms.
 
-The Birkenstock product photographs shown in the README layout example are not covered by this repository's MIT license. Original product-page sources and use notes are listed in [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md). README diagrams and page previews are not included in the installable release ZIP.
+The V3.2 homepage diagrams, screenshots and demonstration reports are generated from this project's fictional teaching fixtures. The Birkenstock product photographs retained in the V3.1 layout example are not covered by this repository's MIT license. Original product-page sources and use notes are listed in [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md). Homepage diagrams, previews and demonstration reports are distributed separately from the installable release ZIP.

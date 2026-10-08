@@ -14,7 +14,7 @@ questions: 领域扫描后校正的必答问题及优先理由
 geography: 全球或指定市场
 prior_knowledge: 只记录用户明示；未给则按入门解释
 reading_budget: 用户给出则记录，未给不编造
-deliverables: markdown,pdf,sources,data,visuals,images
+deliverables: markdown,pdf,html,sources,data,visuals,images
 ```
 
 默认执行当天为研究截面，先全球发现相关路线，再尊重用户市场范围。回顾历史可以使用后发材料，但要区分它解释的事件期、材料发布日期和“当时已知”的信息。访问日不能冒充观测日；不能把截面之后出现的变化写成截面时已发生。

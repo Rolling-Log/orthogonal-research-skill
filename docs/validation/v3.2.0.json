@@ -1,0 +1,103 @@
+{
+  "version": "v3.2.0",
+  "date": "2026-10-08",
+  "scope": "Reusable delivery and presentation, using clearly labeled fictional fixtures.",
+  "cross_subject": {
+    "subjects": [
+      "product",
+      "industry",
+      "company",
+      "technology",
+      "protocol",
+      "policy",
+      "person",
+      "event"
+    ],
+    "component_kinds": 10,
+    "component_instances": 24,
+    "formats": [
+      "PDF",
+      "offline HTML",
+      "Markdown",
+      "CSV",
+      "JSON"
+    ],
+    "authored_prose_preserved": true
+  },
+  "manual_and_browser_checks": {
+    "platform": "Windows / Chromium and Chrome",
+    "layout_cases": 32,
+    "tested_component_instances": 24,
+    "javascript_errors": 0,
+    "external_network_requests": 0,
+    "offline_and_no_javascript_reading": true,
+    "notes_persistence_export_import_and_isolation": true,
+    "pdf_pages_reviewed": 34,
+    "relocated_packages_rebuilt": 2,
+    "original_directory_read_attempts": 0,
+    "independent_skill_use": {
+      "frontend_code_changes": false,
+      "converter_code_changes": false,
+      "output_format_question_needed": false,
+      "pdf_pages_reviewed": 5
+    }
+  },
+  "local_automated_checks": {
+    "component_tests": {
+      "run": 27,
+      "passed": 26,
+      "skipped": 1,
+      "skip_reason": "Windows symlink permission"
+    },
+    "delivery_integration_tests": {
+      "run": 10,
+      "passed": 10
+    },
+    "legacy_static_visual_types_in_both_formats": 6,
+    "package_check": "passed",
+    "skill_metadata_check": "passed",
+    "maintenance_tests": {
+      "run": 11,
+      "passed": 11
+    },
+    "powershell_install_and_installed_package_check": "passed"
+  },
+  "cross_platform_ci": {
+    "status": "passed",
+    "url": "https://github.com/Rolling-Log/orthogonal-research-skill/actions/runs/37785773713",
+    "tested_commit": "175d6978689574c9ef105932273d3adbbb0d78e7",
+    "jobs": [
+      {
+        "name": "self-test (windows-latest, 3.9)",
+        "conclusion": "success"
+      },
+      {
+        "name": "self-test (windows-latest, 3.12)",
+        "conclusion": "success"
+      },
+      {
+        "name": "self-test (macos-latest, 3.9)",
+        "conclusion": "success"
+      },
+      {
+        "name": "self-test (macos-latest, 3.12)",
+        "conclusion": "success"
+      },
+      {
+        "name": "self-test (ubuntu-latest, 3.9)",
+        "conclusion": "success"
+      },
+      {
+        "name": "self-test (ubuntu-latest, 3.12)",
+        "conclusion": "success"
+      }
+    ],
+    "scope": "Installers, package, legacy PDF, components, dual delivery, retrieval adapter and release packaging."
+  },
+  "notes": [
+    "Teaching fixtures do not represent actual product, industry or protocol research.",
+    "The 200% reflow check used equivalent viewport width, not native browser zoom.",
+    "PDF visual review covered all pages before final HTML-only UI edits.",
+    "Research conclusions and reader comprehension are not evaluated by rendering tests."
+  ]
+}

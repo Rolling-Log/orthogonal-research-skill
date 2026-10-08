@@ -111,6 +111,8 @@
 
 ## 构建接口
 
+新研究默认使用 [reusable-delivery.md](reusable-delivery.md) 的 `build_delivery.py study.json`，共用正文与来源生成 PDF、交互 HTML 和可编辑资料。下面的旧接口保留用于独立 PDF 与历史报告；其 HTML 仅为排版调试稿。本次交付扩展不修改上面的中文写作要求或 PDF 视觉规范。
+
 跨平台单行命令：
 
 ```text

@@ -2,13 +2,15 @@ name: orthogonal-research-skill cross-platform
 
 on:
   push:
+    branches: ["**"]
+    tags: ["v*"]
     paths:
       - "orthogonal-research-skill/**"
       - "install.sh"
       - "install.ps1"
       - ".github/workflows/orthogonal-research-skill.yml"
       - "tests/**"
-      - "tools/package_release.py"
+      - "tools/**"
   pull_request:
     paths:
       - "orthogonal-research-skill/**"
@@ -16,7 +18,8 @@ on:
       - "install.ps1"
       - ".github/workflows/orthogonal-research-skill.yml"
       - "tests/**"
-      - "tools/package_release.py"
+      - "tools/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,19 +29,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.9", "3.12"]
     runs-on: ${{ matrix.os }}
     env:
       PYTHONNOUSERSITE: "1"
       PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
-      - name: Test installer on macOS
-        if: runner.os == 'macOS'
+      - name: Test installer on macOS and Linux
+        if: runner.os != 'Windows'
         run: ./install.sh "$RUNNER_TEMP/orthogonal-research-skill"
       - name: Test installer on Windows
         if: runner.os == 'Windows'
@@ -50,7 +54,14 @@ jobs:
         run: python orthogonal-research-skill/scripts/init_workspace.py --self-test
       - name: Build isolated sample PDF
         run: python orthogonal-research-skill/scripts/build_report.py --self-test
-      - name: Validate representative image rows
+      - name: Validate reusable component contracts
+        run: python orthogonal-research-skill/scripts/test_report_components.py
+      - name: Validate PDF and HTML delivery
+        run: python orthogonal-research-skill/scripts/test_delivery.py
+      - name: Validate image rows, retrieval launcher, installer and reproducible package
         run: python -m unittest discover -s tests -v
       - name: Validate single-version release package
         run: python tools/package_release.py
+      - name: Validate release tag matches skill version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python tools/package_release.py --expect-version "${{ github.ref_name }}"

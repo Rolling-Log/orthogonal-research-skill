@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a self-contained research workspace on Desktop or at an explicit path."""
+"""Create a self-contained research workspace in the current project or explicit path."""
 
 from __future__ import annotations
 
@@ -105,9 +105,9 @@ def create_workspace(subject: str, destination: Optional[Path] = None,
     stamp = timestamp or datetime.now().strftime("%Y%m%d-%H%M%S")
     name = "{}_横纵分析报告_{}".format(safe_subject(subject), stamp)
     if destination is None:
-        base = (desktop or desktop_path()).expanduser()
+        base = (desktop or Path.cwd()).expanduser()
         if not base.is_dir():
-            raise WorkspaceError("Desktop directory is unavailable: {}".format(base))
+            raise WorkspaceError("Base directory is unavailable: {}".format(base))
         root = _unique_path(base / name, stamp)
     else:
         requested = destination.expanduser()
@@ -150,6 +150,14 @@ def create_workspace(subject: str, destination: Optional[Path] = None,
                         "rounds": [], "important_unknowns": [], "revisions": [],
                         "stop_reason": ""}, ensure_ascii=False, indent=2), encoding="utf-8"
         )
+        (root / "study.json").write_text(json.dumps({
+            "version": 1, "id": "study-" + uuid.uuid4().hex[:16],
+            "title": subject + "横纵分析报告", "subject_type": "other",
+            "as_of": datetime.now().date().isoformat(), "report": "report.md",
+            "sources": "sources/sources.json", "components": "data/components.json",
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
+        (root / "data" / "components.json").write_text(
+            '{"version": 1, "components": []}\n', encoding="utf-8")
     except OSError as exc:
         raise WorkspaceError("cannot create report workspace at {}: {}".format(root, exc))
     return root.resolve()
@@ -170,7 +178,7 @@ def self_test() -> None:
         for root in (first, second, explicit):
             required = (
                 "report.md", "sources/sources.json", "sources/research-log.json",
-                "data", "visuals", "images", "build/qa",
+                "data", "visuals", "images", "build/qa", "study.json", "data/components.json",
             )
             if any(not (root / relative).exists() for relative in required):
                 raise WorkspaceError("workspace structure is incomplete: {}".format(root))
@@ -182,7 +190,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--subject", help="research subject used in the package name")
     parser.add_argument("--destination", type=Path,
-                        help="explicit package directory; overrides the Desktop default")
+                        help="explicit package directory; overrides the current-directory default")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     try:
@@ -197,7 +205,9 @@ def main() -> int:
         print(json.dumps({
             "workspace": str(root),
             "report_markdown": str(root / "report.md"),
-            "expected_pdf": str(root / report_name),
+            "expected_pdf": str(root / "delivery" / "report.pdf"),
+            "expected_html": str(root / "delivery" / "report.html"),
+            "study_manifest": str(root / "study.json"),
         }, ensure_ascii=False))
         return 0
     except (WorkspaceError, OSError) as exc:

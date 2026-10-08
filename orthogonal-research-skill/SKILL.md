@@ -1,6 +1,6 @@
 ---
 name: orthogonal-research-skill
-description: 用纵横调研帮助不熟悉领域、但要开展相关工作的人系统理解产品、公司、技术、概念、行业或人物。联网还原演变与关键选择，比较当下路线和替代方案，形成可追溯、可被反证修订的判断，交付中文深度报告与 PDF。用于“纵横调研”“横纵分析”“深度研究”“摸清来龙去脉”及需要系统建立工作理解的调研；不用于简单释义、单一事实、纯摘要或无证据观点文。
+description: 用纵横调研帮助不熟悉领域、但要开展相关工作的人系统理解产品、公司、技术、概念、行业或人物。联网还原演变与关键选择，比较当下路线和替代方案，形成可追溯、可被反证修订的判断，交付中文深度报告、PDF 与交互 HTML。用于“纵横调研”“横纵分析”“深度研究”“摸清来龙去脉”及需要系统建立工作理解的调研；不用于简单释义、单一事实、纯摘要或无证据观点文。
 ---
 
 # orthogonal-research-skill
@@ -12,6 +12,7 @@ description: 用纵横调研帮助不熟悉领域、但要开展相关工作的�
 - 开始研究时读 [research-protocol.md](references/research-protocol.md)：输入、证据合同、检索与停止条件。
 - 定问题时及交付前读 [adversarial-review.md](references/adversarial-review.md)：目标机制、强反方、区分证据与修订。
 - 写作和构建时读 [report-spec.md](references/report-spec.md)：主结构、阅读路径、引用和排版。
+- 准备交付时读 [reusable-delivery.md](references/reusable-delivery.md)：同一研究生成 PDF、HTML 和可编辑资料；按需查询组件协议，不加载或重写整套前端。
 - 使用图片、数据图或图谱时读 [visual-system.md](references/visual-system.md)。
 - 需要行为或格式范例时读 [examples.md](references/examples.md)。升级审查需要能力迁移依据时读 [v1-regression-matrix.md](references/v1-regression-matrix.md)。
 
@@ -23,7 +24,7 @@ description: 用纵横调研帮助不熟悉领域、但要开展相关工作的�
 
 用途明确就直接继续。只有对象或用途的不同解释会实质改变研究边界时，才问 1–2 个简短问题；不重复问已给出的信息，不默认进入 grill me。只缺知识水平或阅读预算时，按入门读者组织、提供核心与深入阅读路径。用户自己也不知道或只想探索时，从“是什么—如何运作—怎样演变—今天有哪些路线—重要争议与未知”开始，不把探索暗改成采购或立项。
 
-用户未指定输出位置时运行：
+在用户项目内建立研究包；用户未指定输出位置时运行（默认当前工作目录，目录冲突自动另建）：
 
 ```text
 python <skill-dir>/scripts/init_workspace.py --subject "对象"
@@ -34,11 +35,13 @@ python <skill-dir>/scripts/init_workspace.py --subject "对象"
 ```text
 <对象>_横纵分析报告_<日期时间>/
 ├── report.md
-├── <对象>_横纵分析报告.pdf
+├── study.json
+├── delivery/                 正式 PDF、HTML、Markdown 与数据；构建后生成
 ├── sources/
 │   ├── sources.json
 │   └── research-log.json
 ├── data/
+│   └── components.json       按需选用的交互与静态说明，允许空列表
 ├── visuals/
 ├── images/
 └── build/
@@ -65,6 +68,8 @@ python <skill-dir>/scripts/init_workspace.py --subject "对象"
 对象复杂且环境允许时并行分工纵向、横向和补充材料；简单对象不用强凑三组。各组返回原始 URL、时间口径、支持范围、冲突与未知，合并时检查循环印证。
 
 ### 获取失败
+
+若关键问题需要平台内搜索、视频字幕、独立使用记录，或现有检索遗漏了重要的最新进展，按需读 [retrieval-tools.md](references/retrieval-tools.md)。其中的 Agent-Reach 是可选的安装与诊断工具；采集由实际可用的上游工具完成。先检查能力，再针对缺口调用；不为每份报告安装工具或遍历所有平台。
 
 优先使用现有搜索、浏览或获取工具。确需文本而工具失败时，可调用有界回退：
 
@@ -134,13 +139,17 @@ python <skill-dir>/scripts/check_research.py sources/sources.json --output build
 
 这只检查 ID 关系、日期和高影响记录的可审查性，不能证明原文支持、因果程度、检索充分或读者理解。由独立审查者识别全部承重判断后核对原文；不能只审作者自标高影响的条目。按对抗审查处理重大遗漏、口径、因果和读者流，反证后同步摘要、正文、表图与台账。
 
-构建：
+完整研究默认同时交付 PDF 和 HTML，不先让用户二选一；明确只要一种则遵从。两种形式共用完整正文、数据、来源与研究截面，不改变本节以前的写作要求，不把 HTML 浓缩成少量展示卡片。网页新增的关键材料与条件必须有 PDF 静态对应。
+
+按理解任务选择已有组件，填研究内容和证据，不照搬上一个对象的规则。先运行 `python <skill-dir>/scripts/report_components.py --list`，再用 `--describe <kind>` 只读选中的协议。只有真实缺口才扩展一个独立组件并验证；不因为换题而重写页面、引用、图表、导出或笔记功能。详细规则见 [reusable-delivery.md](references/reusable-delivery.md)。
+
+确认 `study.json` 中对象类型、标题、研究截面和文件路径后构建：
 
 ```text
-python <skill-dir>/scripts/build_report.py report.md "对象_横纵分析报告.pdf" --title "对象" --sources sources/sources.json --visual-spec data/visuals.json --html-output build/report.html --log-output build/report.build.json
+python <skill-dir>/scripts/build_delivery.py <workspace>/study.json
 ```
 
-未使用 SVG 数据图且没有 `data/visuals.json` 时，省略 `--visual-spec data/visuals.json`；不创建空图文件凑交付。
+有旧六类 SVG 图时在 `study.json` 设置 `visual_spec: "data/visuals.json"`；没有则省略，不创建空图文件凑交付。旧 `build_report.py` 保留，继续用于独立 PDF 或历史报告重建；它生成的 HTML 调试稿不等同于新的交互交付。
 
 Python 3.9+；内置 PDF 依赖与中日韩字体，无需系统字体或浏览器。JPEG、非交错 8-bit PNG 和规范 SVG 使用报告相对路径；不支持格式按提示修复。PDF 封面与 HTML 自动显示全文字数和粗估阅读时间，改内容后重建；完整口径与 `reading_metrics` 见报告规范。封面无作者，`--author` 仅元数据。
 
@@ -153,4 +162,4 @@ python <skill-dir>/scripts/build_report.py --self-test
 
 将真实 PDF 每页渲染为图片逐页检查：字体、全宽正文、原有标题配色和竖条、引用说明、表格、图片、图谱、页眉页脚与分页。抽取文字不能代替视觉检查。构建日志的 render_status 只说明渲染，research_review_status 不被构建成功升级为研究通过。
 
-承重错误或渲染失败先修复；无法解决时保留材料并说明尚未完成或限定产物。交付实际 PDF 和研究包绝对路径，说明影响结论的限制。只有实际运行的平台才能称实机通过；其他平台写“静态兼容，未实机验证”。方法版的效果也只能按真实比较结果陈述，不能因字段齐全宣称普遍提升。
+承重错误或渲染失败先修复；无法解决时保留材料并说明尚未完成或限定产物。交付实际 PDF、HTML 和研究包绝对路径，说明影响结论的限制。只有实际运行的平台才能称实机通过；其他平台写“静态兼容，未实机验证”。方法版的效果也只能按真实比较结果陈述，不能因字段齐全宣称普遍提升。

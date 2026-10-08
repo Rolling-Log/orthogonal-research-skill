@@ -1,4 +1,4 @@
 interface:
   display_name: "orthogonal-research-skill"
-  short_description: "按工作或探索目的解释纵横演变，交付有证据边界与可修订判断的深度报告"
-  default_prompt: "使用 $orthogonal-research-skill 帮我建立指定对象的工作理解，研究纵向演变、当下路线和关键未知，并交付可追溯的 PDF 报告。"
+  short_description: "按工作或探索目的解释纵横演变，用共用证据交付完整 PDF 与可交互 HTML 深度报告"
+  default_prompt: "使用 $orthogonal-research-skill 帮我建立指定对象的工作理解，研究纵向演变、当下路线和关键未知，并交付共用证据的 PDF 与交互 HTML 报告。"

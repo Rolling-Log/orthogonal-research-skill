@@ -2,23 +2,17 @@
 set -eu
 
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-source_dir="$repo_dir/orthogonal-research-skill"
-codex_home="${CODEX_HOME:-$HOME/.codex}"
-destination="${1:-$codex_home/skills/orthogonal-research-skill}"
-
-if [ ! -f "$source_dir/SKILL.md" ]; then
-  echo "error: skill source not found: $source_dir" >&2
+if command -v python3 >/dev/null 2>&1; then
+  python_command=python3
+elif command -v python >/dev/null 2>&1; then
+  python_command=python
+else
+  echo "error: Python 3.9 or newer is required." >&2
   exit 1
 fi
 
-if [ -e "$destination" ]; then
-  echo "error: destination already exists: $destination" >&2
-  echo "Remove or rename it before installing." >&2
+if [ "$#" -gt 1 ]; then
+  echo "usage: install.sh [destination]" >&2
   exit 1
 fi
-
-mkdir -p "$(dirname -- "$destination")"
-cp -R "$source_dir" "$destination"
-
-echo "Installed orthogonal-research-skill to:"
-echo "$destination"
+exec "$python_command" -X utf8 "$repo_dir/tools/install_skill.py" "$@"

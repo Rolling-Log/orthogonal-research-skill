@@ -20,6 +20,7 @@ EXPECTED_ASSETS = {
     "assets/sample/jpeg_fixture.jpg": "6e0b7c5fb9e3557fe17c5cec52fa14d45f48e25fc4d155ebebfcb2fab7c2096f",
 }
 REQUIRED = [
+    "VERSION.txt",
     "SKILL.md", "agents/openai.yaml", "assets/report.css",
     "assets/licenses/DEPENDENCIES.json", "assets/licenses/REPORTLAB-LICENSE.txt",
     "references/research-protocol.md", "references/report-spec.md",
@@ -28,6 +29,11 @@ REQUIRED = [
     "scripts/build_report.py", "scripts/init_workspace.py",
     "scripts/render_visuals.py", "scripts/visual_scene.py",
     "scripts/check_research.py",
+    "scripts/build_delivery.py", "scripts/report_components.py", "scripts/report_web.py",
+    "assets/research-web.css", "assets/research-web.js",
+    "references/reusable-delivery.md", "references/report-components.md",
+    "references/reuse-coverage.md", "scripts/create_delivery_fixture.py",
+    "references/retrieval-tools.md", "scripts/retrieval_tools.py",
 ]
 
 

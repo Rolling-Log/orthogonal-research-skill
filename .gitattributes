@@ -8,4 +8,3 @@ orthogonal-research-skill/** -text
 docs/ export-ignore
 tests/ export-ignore
 .github/ export-ignore
-tools/ export-ignore

@@ -1,11 +1,11 @@
-orthogonal-research-skill V3.1.0
-发布日期：2026-10-08。基于 V3，用途适配、第一性原理、证据边界和对抗审查方法沿用 V3。
+orthogonal-research-skill V3.2.0
+发布日期：2026-10-08。基于 V3.1.0，沿用纵横研究、用途适配、第一性原理、证据核验与对抗审查；中文写作风格和原 PDF 版式不变。
 
-新增开篇代表图片：位于一句话定义及来源说明之后、执行摘要之前；1–4 张单行横排，每张短说明 1–10 个字符，原比例缩放，图片与说明、来源同页，后文自然分页。PDF 与 HTML 均支持 representative-images 容器，短说明计入封面字数。
+完整研究默认从同一正文、来源和组件数据生成 PDF 与离线 HTML。新增十类可复用交互组件、目录与搜索、笔记与收藏、主题配色、手机布局；原有六类静态图继续用于两种阅读形式。
+交付包同时包含 Markdown、CSV、结构化 JSON 与可重建的 study.json；构建过程无需调用模型。工作目录默认位于当前项目，可显式指定。
+按需发现并调用 Agent-Reach 相关采集工具及已有工具，沿用原来源台账和检索记录。外部工具由使用环境提供。
 
-本文件夹即 skill 根，SKILL.md 与 agents、scripts、references、assets、vendor 同级。安装时只选择这一份；同名 skill 不适合同时安装多个版本。
-GitHub 默认分支仅放当前版；旧版保存在版本标签和历史发布中。最新版下载包仅包含 orthogonal-research-skill/，不包含旧版、测试档案和主页素材。
+八类虚构对象用于跨题材交付验证：产品、行业、公司、技术、协议、政策、人物、事件。实际验证与覆盖范围见 references/reuse-coverage.md 和发布记录。
+本文件夹即 skill 根，SKILL.md 与 agents、scripts、references、assets、vendor 同级。公开安装包使用固定目录名 orthogonal-research-skill；版本由本文件与发布标签记录。
 
-构建器使用内置纯 Python ReportLab 子集与中文字体；公开包不附带 Pillow/curl 的旧 Windows 二进制。常规 JPEG/PNG/PDF 构建不要求安装这些二进制。图片格式转换需要当前环境提供兼容工具。
-新 sources 继续使用 method_version="3"、coverage.balance_policy="diagnostic"。结构校验和渲染成功不等于研究判断已通过审查。
-内置 sample 文件是虚构模板，仅用于结构和渲染测试。对平台兼容性的陈述以对应版本的实际 CI 结果为准。
+构建器使用内置纯 Python ReportLab 子集与中文字体；source ledger 继续使用 method_version="3"、coverage.balance_policy="diagnostic"。V3.1 的 build_report.py 与 representative-images 语法继续可用。

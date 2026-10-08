@@ -52,6 +52,7 @@ body {
 .cover-rule { width: 44mm; height: 1.1mm; background: var(--deep-blue); }
 .cover > p { margin-top: 8mm; color: var(--muted); font-size: 13pt; }
 .cover .cover-meta { margin-top: 28mm; color: var(--ink); font-size: 10.5pt; line-height: 1.8; }
+.cover .cover-stat { margin: 2mm 0 0; color: var(--muted); font-size: 9pt; line-height: 1.6; }
 
 .report { text-align: justify; }
 .report > h1:first-child { display: none; }

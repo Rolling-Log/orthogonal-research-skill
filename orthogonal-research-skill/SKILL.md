@@ -237,6 +237,8 @@ python <skill-dir>/scripts/build_report.py report.md "对象_横纵分析报告.
 
 构建器要求 Python 3.9+，其余 PDF 依赖与中日韩字体已经随 Skill 携带。它直接生成 PDF，同时输出 HTML 调试稿和 `.build.json` 日志；HTML 失败不得影响 PDF 判定。无需系统字体、浏览器、图形命令行程序或平台专属包管理器。
 
+每份报告的 PDF 与 HTML 封面必须包含构建器自动计算的全文字数和预计阅读时间；修改内容后重新构建，不能由模型估算或手填。统计包括正文、表格、图注、段后说明、参考文献和实际嵌入的矢量图文字；不计封面、页眉页脚、URL、引用编号、排版语法或位图内文字。汉字各计 1，外文单词与数字串各计 1；按中文报告 300 至 500 字/分钟粗估范围，图表研读与思考另计。完整口径见 [report-spec.md](references/report-spec.md)，数据写入构建日志的 `reading_metrics`。
+
 构建器支持本地 JPEG、非交错 8-bit PNG，以及由 `visuals.json` 生成的 SVG。WebP、AVIF、交错 PNG 或无法匹配视觉规范的任意 SVG 会在构建前给出转换/修复提示。所有路径必须相对报告目录；禁止远程图片和临时绝对路径。
 
 运行内置自检：

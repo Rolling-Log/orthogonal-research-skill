@@ -22,6 +22,7 @@ import tempfile
 import zlib
 from dataclasses import dataclass
 from datetime import date, datetime
+from html.parser import HTMLParser
 from pathlib import Path, PureWindowsPath
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 from urllib.parse import unquote, urlparse
@@ -81,6 +82,13 @@ BIBLIOGRAPHY_HEADING_RE = re.compile(
 BIBLIOGRAPHY_ITEM_RE = re.compile(r"^\s*(\d+)[.)]\s+(.+?)\s*$")
 SOURCE_ID_RE = re.compile(r"S\d{3,}")
 URL_RE = re.compile(r"https?://[^\s)）>|｜]+")
+CJK_COUNT_RE = re.compile(
+    r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\U00020000-\U000323af]"
+)
+WORD_COUNT_RE = re.compile(r"[^\W_]+(?:[-'’._][^\W_]+)*", re.UNICODE)
+COUNT_URL_RE = re.compile(r"https?://[^\s)）>|｜，。；！？、：‘’“”《》〈〉【】]+")
+READING_RATE_SLOW = 300
+READING_RATE_FAST = 500
 
 
 class BuildError(RuntimeError):
@@ -934,7 +942,7 @@ def _note_flowable(block: Block, style: ParagraphStyle,
 
 def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict[str, Any]],
            visuals: Dict[Path, Scene], report_root: Path, doc_width: float,
-           reference_numbers: Dict[str, int]) -> List[Flowable]:
+           reference_numbers: Dict[str, int], reading_metrics: Dict[str, Any]) -> List[Flowable]:
     styles = _styles()
     story = [Spacer(1, 55 * mm), Paragraph(html.escape(title), ParagraphStyle(
         "cover_title", fontName=FONT_BOLD, fontSize=28, leading=38, textColor=DEEP_BLUE,
@@ -948,6 +956,15 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
         Paragraph("生成日期：{}".format(datetime.now().strftime("%Y-%m-%d %H:%M")), ParagraphStyle(
             "cover_date", fontName=FONT_REGULAR, fontSize=9, leading=16,
             textColor=MUTED, alignment=TA_CENTER)),
+        Paragraph("全文字数：{:,} 字".format(reading_metrics["word_count"]), ParagraphStyle(
+            "cover_word_count", fontName=FONT_REGULAR, fontSize=9, leading=16,
+            textColor=MUTED, alignment=TA_CENTER)),
+        Paragraph(_reading_time_label(reading_metrics), ParagraphStyle(
+            "cover_reading_time", fontName=FONT_REGULAR, fontSize=9, leading=16,
+            textColor=MUTED, alignment=TA_CENTER)),
+        Paragraph("按 300 至 500 字/分钟粗估；图表研读与思考另计", ParagraphStyle(
+            "cover_reading_basis", fontName=FONT_REGULAR, fontSize=8, leading=14,
+            textColor=MUTED, alignment=TA_CENTER)),
         Paragraph("原创作者-数字生命卡兹克", ParagraphStyle(
             "cover_author1", fontName=FONT_REGULAR, fontSize=9, leading=16,
             textColor=MUTED, alignment=TA_CENTER)),
@@ -955,13 +972,7 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
             "cover_author2", fontName=FONT_REGULAR, fontSize=9, leading=16,
             textColor=MUTED, alignment=TA_CENTER)), PageBreak()]
 
-    start = 0
-    if blocks and blocks[0].kind == "heading" and blocks[0].level == 1:
-        start = 1
-    if start < len(blocks) and blocks[start].kind == "quote" and (
-            "研究截面" in blocks[start].text or "研究时间" in blocks[start].text):
-        start += 1
-    for block in blocks[start:]:
+    for block in _report_body_blocks(blocks):
         if block.kind == "heading":
             heading = Paragraph(_inline_display(block.text, reference_numbers),
                                 styles["h{}".format(block.level)])
@@ -1050,6 +1061,100 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
     return story
 
 
+def _report_body_blocks(blocks: Sequence[Block]) -> Sequence[Block]:
+    """Use the same content boundary as the PDF, excluding cover metadata."""
+    start = 1 if blocks and blocks[0].kind == "heading" and blocks[0].level == 1 else 0
+    if start < len(blocks) and blocks[start].kind == "quote" and (
+            "研究截面" in blocks[start].text or "研究时间" in blocks[start].text):
+        start += 1
+    return blocks[start:]
+
+
+class _VisibleText(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.parts: List[str] = []
+        self.in_reference = False
+
+    def handle_data(self, data: str) -> None:
+        if not self.in_reference:
+            self.parts.append(data)
+
+    def handle_starttag(self, tag: str, attrs: Any) -> None:
+        if tag == "super":
+            self.in_reference = True
+        if tag == "br":
+            self.parts.append(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "super":
+            self.in_reference = False
+
+
+def _count_visible_text(rendered: str) -> Tuple[int, int]:
+    parser = _VisibleText()
+    parser.feed(rendered)
+    parser.close()
+    # Inline styling must not split a word; chunks from distinct cells/blocks
+    # are counted separately by the caller. URLs and citation indices are metadata.
+    text = "".join(parser.parts)
+    text = COUNT_URL_RE.sub(" ", text)
+    cjk_count = len(CJK_COUNT_RE.findall(text))
+    other_words = len(WORD_COUNT_RE.findall(CJK_COUNT_RE.sub(" ", text)))
+    return cjk_count, other_words
+
+
+def _reading_metrics(blocks: Sequence[Block], visuals: Dict[Path, Scene],
+                     report_root: Path, reference_numbers: Dict[str, int],
+                     sources: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    """Count rendered report content, rather than Markdown syntax or raw bytes."""
+    chunks: List[str] = []
+    for block in _report_body_blocks(blocks):
+        if block.kind in ("paragraph", "quote"):
+            # Remove only actual source syntax, preserving literal values like [123].
+            body = SOURCE_ID_RE.sub("", ANNOTATION_RE.sub("", block.text))
+            chunks.append(_inline(body))
+            note = _explanatory_notes(block.text, sources, reference_numbers)
+            if note:
+                chunks.append(_inline("说明：" + block.note_text))
+        elif block.kind in ("heading", "caption"):
+            chunks.append(_inline(SOURCE_ID_RE.sub("", block.text)))
+        elif block.kind in ("list", "table"):
+            for row in block.rows or []:
+                chunks.extend(_inline(SOURCE_ID_RE.sub("", cell)) for cell in row)
+        elif block.kind == "image":
+            chunks.append(_inline(SOURCE_ID_RE.sub("", block.alt)))
+            scene = visuals.get(_local_path(block.path, report_root))
+            if scene is not None:
+                for item in scene.elements:
+                    if item["kind"] == "text":
+                        # A wrapped visual label is one text run.
+                        chunks.append(html.escape("".join(str(line) for line in item["lines"])))
+        elif block.kind == "code":
+            chunks.append(html.escape(SOURCE_ID_RE.sub("", block.text)))
+    counts = [_count_visible_text(chunk) for chunk in chunks]
+    cjk_count = sum(value[0] for value in counts)
+    other_words = sum(value[1] for value in counts)
+    count = cjk_count + other_words
+    return {
+        "word_count": count,
+        "cjk_character_count": cjk_count,
+        "other_word_count": other_words,
+        "estimated_minutes_min": (count + READING_RATE_FAST - 1) // READING_RATE_FAST,
+        "estimated_minutes_max": (count + READING_RATE_SLOW - 1) // READING_RATE_SLOW,
+        "reading_rate_units_per_minute": {"slow": READING_RATE_SLOW, "fast": READING_RATE_FAST},
+        "counting_rule": "汉字各计1；外文单词和数字串各计1；不计标点、空白、URL和引用编号",
+        "scope": "正文、标题、表格、图注、段后说明、参考文献及已嵌入矢量图文字；不计封面、页眉页脚及位图内文字",
+        "estimate_basis": "面向中文报告的300至500字/分钟粗估假设；图表研读、查证和思考另计，不代表理解或掌握所需时间",
+    }
+
+
+def _reading_time_label(metrics: Dict[str, Any]) -> str:
+    low, high = metrics["estimated_minutes_min"], metrics["estimated_minutes_max"]
+    interval = str(low) if low == high else "{} 至 {}".format(low, high)
+    return "预计阅读时间：约 {} 分钟".format(interval)
+
+
 def _html_blocks(blocks: List[Block], sources: Dict[str, Dict[str, Any]],
                  reference_numbers: Dict[str, int]) -> str:
     result = []
@@ -1098,14 +1203,17 @@ def _html_blocks(blocks: List[Block], sources: Dict[str, Dict[str, Any]],
 
 def build_html(blocks: List[Block], css: str, title: str, author: str,
                sources: Dict[str, Dict[str, Any]], lang: str,
-               reference_numbers: Dict[str, int]) -> str:
+               reference_numbers: Dict[str, int], reading_metrics: Dict[str, Any]) -> str:
     return """<!doctype html>
 <html lang="{lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="generator" content="orthogonal-research-skill"><title>{title}</title><style>{css}</style></head>
 <body><section class="cover"><h1>{title}</h1><div class="cover-rule"></div><p>横纵分析法深度研究报告</p>
-<p class="cover-meta">生成日期：{day}</p><p class="cover-meta">原创作者-数字生命卡兹克</p><p class="cover-meta">改进作者-RollingLog滑行日志</p></section><main class="report">{body}</main></body></html>""".format(
+<p class="cover-meta">生成日期：{day}</p><p class="cover-stat">全文字数：{word_count:,} 字</p>
+<p class="cover-stat">{reading_time}</p><p class="cover-stat">按 300 至 500 字/分钟粗估；图表研读与思考另计</p>
+<p class="cover-meta">原创作者-数字生命卡兹克</p><p class="cover-meta">改进作者-RollingLog滑行日志</p></section><main class="report">{body}</main></body></html>""".format(
         lang=html.escape(lang, quote=True), title=html.escape(title), css=css,
         day=datetime.now().strftime("%Y-%m-%d %H:%M"),
+        word_count=reading_metrics["word_count"], reading_time=html.escape(_reading_time_label(reading_metrics)),
         body=_html_blocks(blocks, sources, reference_numbers))
 
 
@@ -1159,11 +1267,12 @@ def build_report(input_path: Path, output_path: Path, title: str, author: str,
     if disclosure_needed and not ("执行摘要" in source_text and "研究范围与限制" in source_text):
         raise BuildError("search limitations require both an executive summary and a research limitations section")
     visuals = _visual_map(visual_spec, report_root, sources, reference_numbers)
+    reading_metrics = _reading_metrics(blocks, visuals, report_root, reference_numbers, sources)
     html_path = html_output or output_path.with_suffix(".html")
     html_error = None
     try:
         css = css_path.read_text(encoding="utf-8") if css_path.is_file() else ""
-        html_text = build_html(blocks, css, title, author, sources, lang, reference_numbers)
+        html_text = build_html(blocks, css, title, author, sources, lang, reference_numbers, reading_metrics)
         html_path.parent.mkdir(parents=True, exist_ok=True)
         html_path.write_text(html_text, encoding="utf-8")
     except (OSError, UnicodeError) as exc:
@@ -1178,7 +1287,7 @@ def build_report(input_path: Path, output_path: Path, title: str, author: str,
                                 title=title, author=author, subject="横纵分析法深度研究报告",
                                 pageCompression=1, allowSplitting=1)
         story = _story(blocks, title, author, sources, visuals, report_root, doc.width,
-                       reference_numbers)
+                       reference_numbers, reading_metrics)
         doc.build(story, onFirstPage=lambda canvas, current: None,
                   onLaterPages=lambda canvas, current: _header_footer(canvas, current, title))
     log_path = log_output or output_path.with_suffix(".build.json")
@@ -1190,6 +1299,7 @@ def build_report(input_path: Path, output_path: Path, title: str, author: str,
         "output": None if html_only else output_path.name,
         "html": html_path.name if html_path.is_file() else None,
         "html_error": html_error,
+        "reading_metrics": reading_metrics,
         "citation_source_ids": citation_order,
         "bibliography_source_ids": bibliography_order,
         "reference_numbers": reference_numbers,
@@ -1225,6 +1335,29 @@ def _png_fixture(path: Path) -> None:
 
 
 def self_test() -> None:
+    count_sources = {"S001": {"id": "S001"}}
+    count_report = "# 封面标题\n\n> 研究截面：2026-10-02\n\n## 正文\n\n研究 **USB4** & SSD，速度 40。{{@S001 | 口径一致。}}"
+    count_metrics = _reading_metrics(parse_markdown(count_report), {}, Path.cwd(), {"S001": 1}, count_sources)
+    if count_metrics["word_count"] != 15 or count_metrics["cjk_character_count"] != 12:
+        raise BuildError("visible content counting failed: citation notes must be counted once")
+    plain_report = "# 另一个封面\n\n## 正文\n\n研究 USB4 & SSD，速度 40。{{@S001 | 口径一致。}}"
+    plain_metrics = _reading_metrics(parse_markdown(plain_report), {}, Path.cwd(), {"S001": 1}, count_sources)
+    if count_metrics != plain_metrics:
+        raise BuildError("cover metadata or inline formatting changed reading metrics")
+    extra_metrics = _reading_metrics(parse_markdown(count_report + "\n\n新增事实。"), {}, Path.cwd(),
+                                     {"S001": 1}, count_sources)
+    if extra_metrics["word_count"] != 19:
+        raise BuildError("reading metrics did not update after a content edit")
+    if _count_visible_text("<b>USB</b>4<br/>SSD &amp; 40Gbps https://example.com/long/path <super>[1]</super>") != (0, 3):
+        raise BuildError("mixed text, line break, URL, or reference counting failed")
+    if _count_visible_text("官网：https://example.com。请核查条款。") != (7, 0):
+        raise BuildError("URL counting consumed adjacent Chinese content")
+    if _count_visible_text("型号 [123] 与 [456]。") != (3, 2):
+        raise BuildError("literal bracketed values were mistaken for source references")
+    for count, expected in ((1, (1, 1)), (300, (1, 1)), (500, (1, 2)), (501, (2, 2)), (1500, (3, 5))):
+        metrics = _reading_metrics([Block("paragraph", "字" * count)], {}, Path.cwd(), {}, {})
+        if (metrics["estimated_minutes_min"], metrics["estimated_minutes_max"]) != expected:
+            raise BuildError("reading time rounding failed at {} characters".format(count))
     with tempfile.TemporaryDirectory(prefix="orthogonal-research-skill-") as temp:
         root = Path(temp) / "含 空格"
         root.mkdir()
@@ -1281,6 +1414,10 @@ def self_test() -> None:
         if not (root / "self-test.pdf").is_file() or (root / "self-test.pdf").stat().st_size < 5000:
             raise BuildError("self-test PDF was not created correctly")
         html_debug = (root / "self-test.html").read_text(encoding="utf-8")
+        build_log = json.loads((root / "self-test.build.json").read_text(encoding="utf-8"))
+        log_metrics = build_log["reading_metrics"]
+        if "全文字数：{:,} 字".format(log_metrics["word_count"]) not in html_debug or _reading_time_label(log_metrics) not in html_debug:
+            raise BuildError("cover metrics and build log disagree")
         if "作者：" in html_debug or "metadata-only-author" in html_debug:
             raise BuildError("cover author must never be visible")
         if "<super" not in html_debug or "source-note" not in html_debug or "figure-source" not in html_debug:

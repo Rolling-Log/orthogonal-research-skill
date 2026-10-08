@@ -1,1 +1,11 @@
-* -text
+* text=auto eol=lf
+*.ttf binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.pdf binary
+orthogonal-research-skill/** -text
+docs/ export-ignore
+tests/ export-ignore
+.github/ export-ignore
+tools/ export-ignore

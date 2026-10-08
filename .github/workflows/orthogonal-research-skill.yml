@@ -7,12 +7,16 @@ on:
       - "install.sh"
       - "install.ps1"
       - ".github/workflows/orthogonal-research-skill.yml"
+      - "tests/**"
+      - "tools/package_release.py"
   pull_request:
     paths:
       - "orthogonal-research-skill/**"
       - "install.sh"
       - "install.ps1"
       - ".github/workflows/orthogonal-research-skill.yml"
+      - "tests/**"
+      - "tools/package_release.py"
 
 permissions:
   contents: read
@@ -46,3 +50,7 @@ jobs:
         run: python orthogonal-research-skill/scripts/init_workspace.py --self-test
       - name: Build isolated sample PDF
         run: python orthogonal-research-skill/scripts/build_report.py --self-test
+      - name: Validate representative image rows
+        run: python -m unittest discover -s tests -v
+      - name: Validate single-version release package
+        run: python tools/package_release.py

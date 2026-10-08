@@ -44,7 +44,7 @@ try:
     from reportlab.pdfbase import pdfmetrics, pdfutils
     from reportlab.pdfbase.ttfonts import TTFont
     from reportlab.platypus import (
-        Flowable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
+        Flowable, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle,
     )
 except Exception as exc:  # pragma: no cover - actionable import boundary
     raise SystemExit("error: bundled ReportLab could not be loaded: {}".format(exc))
@@ -453,7 +453,7 @@ def _starts_block(lines: Sequence[str], index: int) -> bool:
     return (not stripped or bool(HEADING_RE.match(line)) or bool(IMAGE_RE.match(stripped))
             or stripped.startswith(">") or stripped.startswith("```") or stripped.startswith("~~~")
             or bool(LIST_RE.match(line)) or _is_table(lines, index)
-            or bool(CAPTION_RE.match(stripped)) or stripped in ("---", "***"))
+            or bool(CAPTION_RE.match(stripped)) or stripped in ("---", "***", "::: representative-images", ":::"))
 
 
 def _cells(line: str) -> List[str]:
@@ -507,6 +507,32 @@ def parse_markdown(text: str) -> List[Block]:
         if not stripped:
             index += 1
             continue
+        if stripped == "::: representative-images":
+            items = []
+            index += 1
+            while index < len(lines) and lines[index].strip() != ":::" :
+                value = lines[index].strip()
+                index += 1
+                if not value:
+                    continue
+                match = IMAGE_RE.fullmatch(value)
+                if not match:
+                    raise BuildError("representative-images accepts only local Markdown images")
+                label, path = match.groups()
+                if not label.strip() or len(label) > 10 or re.search(r"[<>{}*`]|@S\d|\bS\d{3,}\b", label):
+                    raise BuildError("representative image labels must be plain text, 1-10 characters")
+                if Path(urlparse(path).path).suffix.lower() not in (".jpg", ".jpeg", ".png"):
+                    raise BuildError("representative images must be JPEG or PNG")
+                items.append([label, path])
+            if index >= len(lines):
+                raise BuildError("unterminated representative-images block")
+            if not 1 <= len(items) <= 4:
+                raise BuildError("representative-images requires 1-4 images in one row")
+            blocks.append(Block("representative_images", rows=items))
+            index += 1
+            continue
+        if stripped == ":::" :
+            raise BuildError("unexpected representative-images closing delimiter")
         heading = HEADING_RE.match(line)
         if heading:
             if re.search(r"\{\{\s*@", heading.group(2)):
@@ -937,6 +963,35 @@ class PortableImage(Flowable):
                                   preserveAspectRatio=True)
 
 
+class RepresentativeImages(Flowable):
+    """One uncluttered row with intact image proportions and short labels."""
+    def __init__(self, items: List[List[str]], report_root: Path) -> None:
+        Flowable.__init__(self)
+        self.labels = [item[0] for item in items]
+        self.images = [PortableImage(_local_path(item[1], report_root), max_height=145,
+                                    max_width_ratio=0.78 if len(items) == 1 else 0.96)
+                       for item in items]
+        self.spaceBefore, self.spaceAfter = 6, 4
+
+    def wrap(self, available_width: float, available_height: float) -> Tuple[float, float]:
+        self.width = available_width
+        self.gap = 12
+        self.column = (available_width - self.gap * (len(self.images) - 1)) / len(self.images)
+        sizes = [image.wrap(self.column, available_height) for image in self.images]
+        self.image_height = max(height for _, height in sizes)
+        self.height = self.image_height + 24
+        return self.width, self.height
+
+    def draw(self) -> None:
+        for index, (image, label) in enumerate(zip(self.images, self.labels)):
+            left = index * (self.column + self.gap)
+            image.drawOn(self.canv, left + (self.column - image.width) / 2,
+                         22 + (self.image_height - image.height) / 2)
+            self.canv.setFont(FONT_REGULAR, 9)
+            self.canv.setFillColor(INK)
+            self.canv.drawCentredString(left + self.column / 2, 5, label)
+
+
 def _visual_map(spec_path: Optional[Path], report_root: Path,
                 sources: Dict[str, Dict[str, Any]],
                 reference_numbers: Dict[str, int]) -> Dict[Path, Scene]:
@@ -1143,6 +1198,8 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
             if block.alt:
                 story.append(Paragraph(_inline_display(block.alt, reference_numbers),
                                        styles["figure_caption"]))
+        elif block.kind == "representative_images":
+            story.append(RepresentativeImages(block.rows or [], report_root))
         elif block.kind == "caption":
             story.extend(_noted_flowables(block.text, styles["figure_source"],
                                            styles["source_note"], sources, reference_numbers))
@@ -1153,7 +1210,21 @@ def _story(blocks: List[Block], title: str, author: str, sources: Dict[str, Dict
             story.append(Table([[""]], colWidths=[doc_width], rowHeights=[0.4],
                                style=TableStyle([("BACKGROUND", (0, 0), (-1, -1), BORDER)])))
             story.append(Spacer(1, 6))
-    return story
+    grouped = []
+    index = 0
+    while index < len(story):
+        flow = story[index]
+        if isinstance(flow, RepresentativeImages):
+            group = [flow]
+            index += 1
+            while index < len(story) and isinstance(story[index], Paragraph) and story[index].style.name in ("figure_source", "source_note"):
+                group.append(story[index])
+                index += 1
+            grouped.append(KeepTogether(group))
+        else:
+            grouped.append(flow)
+            index += 1
+    return grouped
 
 
 def _report_body_blocks(blocks: Sequence[Block]) -> Sequence[Block]:
@@ -1230,6 +1301,10 @@ def _reading_metrics(blocks: Sequence[Block], visuals: Dict[Path, Scene],
                         # A wrapped visual label is one text run.
                         chunks.append(html.escape(str(item.get("count_text", "".join(
                             str(line) for line in item["lines"])))))
+        elif block.kind == "representative_images":
+            for label, path in block.rows or []:
+                _local_path(path, report_root)
+                chunks.append(html.escape(label))
         elif block.kind == "code":
             chunks.append(html.escape(SOURCE_ID_RE.sub("", block.text)))
     counts = [_count_visible_text(chunk) for chunk in chunks]
@@ -1290,6 +1365,11 @@ def _html_blocks(blocks: List[Block], sources: Dict[str, Dict[str, Any]],
             result.append('<figure class="{}"><img src="{}" alt="{}"><figcaption>{}</figcaption></figure>'.format(
                 figure_class, html.escape(block.path, quote=True), html.escape(block.alt, quote=True),
                 _inline_display(block.alt, reference_numbers)))
+        elif block.kind == "representative_images":
+            items = ''.join('<figure><img src="{}" alt="{}"><figcaption>{}</figcaption></figure>'.format(
+                html.escape(path, quote=True), html.escape(label, quote=True), html.escape(label))
+                for label, path in block.rows or [])
+            result.append('<div class="representative-images">{}</div>'.format(items))
         elif block.kind == "caption":
             result.append('<p class="figure-source">{}</p>'.format(
                 _inline_with_notes(block.text, sources, reference_numbers)))
@@ -1412,7 +1492,8 @@ def build_report(input_path: Path, output_path: Path, title: str, author: str,
         "bitmap_image_count": sum(
             1 for block in blocks
             if block.kind == "image" and Path(urlparse(block.path).path).suffix.lower() != ".svg"
-        ),
+        ) + sum(len(block.rows or []) for block in blocks if block.kind == "representative_images"),
+        "representative_image_count": sum(len(block.rows or []) for block in blocks if block.kind == "representative_images"),
         "source_count": len(sources),
         "tier1_source_count": sum(1 for source in sources.values() if source.get("tier") == 1),
         "overseas_source_count": sum(1 for source in sources.values()

@@ -17,3 +17,5 @@ Upstream: https://github.com/adobe-fonts/source-han-sans
 ## Scope
 
 Pillow, curl.exe, browser binaries, and network credentials are not bundled. External sources, images, and datasets used in generated reports remain subject to their own terms.
+
+The Birkenstock product photographs shown in the README layout example are not covered by this repository's MIT license. Original product-page sources and use notes are listed in [docs/IMAGE_CREDITS.md](docs/IMAGE_CREDITS.md). README diagrams and page previews are not included in the installable release ZIP.

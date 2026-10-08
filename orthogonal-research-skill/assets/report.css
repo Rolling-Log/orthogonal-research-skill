@@ -127,6 +127,12 @@ figcaption {
   text-align: center;
 }
 
+.representative-images { display: flex; gap: 12pt; margin: 6pt 0 4pt; break-inside: avoid; break-after: avoid; }
+.representative-images figure { flex: 1; min-width: 0; margin: 0; }
+.representative-images img { width: 96%; height: 145pt; max-height: 145pt; object-fit: contain; }
+.representative-images figure:only-child img { max-width: 78%; }
+.representative-images figcaption { color: var(--ink); font-size: 9pt; font-weight: 400; }
+
 pre {
   overflow-x: auto;
   padding: 4mm;
